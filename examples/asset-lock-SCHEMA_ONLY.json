@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1.0.0",
+  "gameId": "space-shooter-basic",
+  "profileId": "web-cocosair-preview",
+  "inputDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+  "toolchain": {
+    "a2assetVersion": "1.0.0",
+    "processorVersions": {
+      "image2d": "1.0.0"
+    }
+  },
+  "entries": {
+    "player.main": {
+      "assetId": "ships.blue-falcon",
+      "version": "1.0.0",
+      "sourceHashes": [
+        "0000000000000000000000000000000000000000000000000000000000000000"
+      ]
+    }
+  }
+}

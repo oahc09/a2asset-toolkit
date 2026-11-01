@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "1.0.0",
+  "themeId": "sci-fi-neon",
+  "palette": {
+    "primary": "#22D3EE",
+    "enemy": "#F43F5E",
+    "bg": "#070D1F"
+  },
+  "renderStyle": "neon",
+  "layout": {
+    "width": 720,
+    "height": 1280,
+    "safeArea": [
+      32,
+      32,
+      32,
+      32
+    ]
+  },
+  "rules": {
+    "viewAngle": "top-down",
+    "outline": "thin",
+    "animationStyle": "frame"
+  }
+}

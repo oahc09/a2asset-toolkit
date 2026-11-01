@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "1.0.0",
+  "gameId": "space-shooter-basic",
+  "bindings": {
+    "player.main": {
+      "assetId": "ships.blue-falcon",
+      "version": "1.0.0",
+      "bindingSource": "explicit"
+    }
+  }
+}

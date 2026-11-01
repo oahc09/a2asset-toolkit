@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "1.0.0",
+  "gameId": "space-shooter-basic",
+  "profileId": "web-cocosair-preview",
+  "buildFingerprint": "0000000000000000000000000000000000000000000000000000000000000000",
+  "bindings": {
+    "player.main": {
+      "assetId": "ships.blue-falcon",
+      "kind": "sprite2d",
+      "files": [
+        "assets/ships/blue-falcon.png"
+      ],
+      "logicalSize": [
+        48,
+        48
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "stateClips": {
+        "idle": {
+          "loop": true,
+          "frames": [
+            {
+              "file": "assets/ships/blue-falcon.png",
+              "durationMs": 100,
+              "pivot": [
+                0.5,
+                0.5
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "files": [
+    {
+      "path": "assets/ships/blue-falcon.png",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "bytes": 0,
+      "mediaType": "image/png"
+    }
+  ]
+}
