@@ -9,18 +9,27 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "test": "node --import tsx --test tests/**/*.test.ts && npm run test:runtime",
+    "test": "npm run build && node --import tsx --test tests/**/*.test.ts && npm run test:runtime",
     "test:contracts": "node --import tsx --test tests/contracts/*.test.ts",
     "test:bridge": "node --import tsx --test tests/bridge/*.test.ts",
-    "test:runtime": "node --test tests/runtime/*.test.mjs"
+    "test:runtime": "node --test tests/runtime/*.test.mjs",
+    "build": "node scripts/build.mjs",
+    "test:cli": "npm run build && node --import tsx --test tests/cli/*.test.ts"
   },
   "dependencies": {
     "ajv": "8.18.0",
-    "ajv-formats": "3.0.1"
+    "ajv-formats": "3.0.1",
+    "pngjs": "7.0.0",
+    "yauzl": "3.4.0"
   },
   "devDependencies": {
     "@types/node": "24.10.0",
+    "@types/pngjs": "6.0.5",
+    "@types/yauzl": "2.10.3",
     "tsx": "4.20.6",
     "typescript": "5.9.3"
+  },
+  "bin": {
+    "a2asset": "scripts/a2asset.mjs"
   }
 }

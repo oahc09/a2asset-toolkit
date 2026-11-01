@@ -1,7 +1,7 @@
 # A2Asset Toolkit
 
 Offline-first TypeScript asset contracts and engineering audit for game JSON →
-licensed resource bundles → CocosAirJS. **Current stage: M0, not a v1.0 product.**
+licensed resource bundles → CocosAirJS. **Current stage: M1 implementation, not a v1.0 product.**
 No AI artwork generation/editing, web scraping, SaaS or engine repository changes.
 
 ## Run the current checks
@@ -32,9 +32,9 @@ complete game nor human visual approval. It does not silently download an SDK.
 - `mapGameSpec(spec, sourceValidator)`: pure six-archetype presentation bridge;
   source validator must be the pinned upstream implementation, not a test stub.
 
-All return structured status/diagnostics. No `a2asset build/import/approve` CLI,
-registry, production Runtime Adapter, automatic licensing, or v1.0 release exists
-at this stage. M1–M5 require their own implementation and gate evidence.
+All return structured status/diagnostics. M1 adds offline import/registry/explicit review commands; see [CLI](docs/cli.md).
+No `a2asset build` command, production Runtime Adapter, automatic licensing, or
+v1.0 release exists at this stage. M1–M5 require their own implementation and gate evidence.
 
 ## Licenses and provenance
 
@@ -43,3 +43,5 @@ and exact revision in `fixtures/game-specs/SOURCE.json`. The tiny geometry PNG i
 reproducibly drawn by `scripts/m0-runtime-fixture.mjs`, Preview feasibility only;
 no human production rights/visual approval is inferred. Dependency versions are
 locked in `package-lock.json`; no npm publication or deployment is performed.
+
+M1 baseline authorization and retained scope: [decision](docs/implementation-baseline.md).
