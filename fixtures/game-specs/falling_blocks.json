@@ -1,0 +1,173 @@
+{
+  "schema_version": "0.1",
+  "metadata": {
+    "id": "falling_blocks-reference",
+    "version": "0.1.0"
+  },
+  "design": {
+    "archetype": "falling_blocks",
+    "audience": {
+      "type": "casual"
+    },
+    "session": {
+      "target_minutes": {
+        "min": 2,
+        "max": 5
+      }
+    },
+    "pillars": [
+      "readable_rules",
+      "meaningful_decisions"
+    ],
+    "complexity": {
+      "action_budget": "low",
+      "mechanic_budget": "medium"
+    },
+    "content_target": {
+      "type": "challenge",
+      "expected_count": 1
+    }
+  },
+  "game": {
+    "archetype": "falling_blocks"
+  },
+  "runtime": {
+    "simulation_mode": "FIXED_STEP",
+    "tick_rate": 60
+  },
+  "action_space": {
+    "type": "composite",
+    "fields": {
+      "left": {
+        "type": "discrete",
+        "values": [
+          false,
+          true
+        ]
+      },
+      "right": {
+        "type": "discrete",
+        "values": [
+          false,
+          true
+        ]
+      },
+      "softDrop": {
+        "type": "discrete",
+        "values": [
+          false,
+          true
+        ]
+      },
+      "rotateCWPressed": {
+        "type": "discrete",
+        "values": [
+          false,
+          true
+        ]
+      },
+      "rotateCCWPressed": {
+        "type": "discrete",
+        "values": [
+          false,
+          true
+        ]
+      },
+      "hardDropPressed": {
+        "type": "discrete",
+        "values": [
+          false,
+          true
+        ]
+      },
+      "holdPressed": {
+        "type": "discrete",
+        "values": [
+          false,
+          true
+        ]
+      }
+    }
+  },
+  "observation": {
+    "mode": "VISIBLE_STATE",
+    "delay_ms": 0,
+    "noise": null
+  },
+  "rng": {
+    "enabled": true
+  },
+  "content": {
+    "id": "falling_blocks-challenge-001",
+    "type": "challenge",
+    "archetype": "falling_blocks",
+    "parameters": {},
+    "objectives": [],
+    "dependencies": [],
+    "extensions": {
+      "falling_blocks": {
+        "ruleset_version": "falling_blocks_v0.1",
+        "width": 10,
+        "height": 20,
+        "gravityTicks": 30,
+        "softDropTicks": 2,
+        "lockDelayTicks": 30,
+        "dasTicks": 10,
+        "arrTicks": 2,
+        "maxLockResets": 15,
+        "previewCount": 1,
+        "targetLines": 4,
+        "maxTicks": 18000,
+        "initialBoard": [],
+        "sequence": []
+      }
+    }
+  },
+  "evaluation": {
+    "player_profiles": [
+      {
+        "id": "random",
+        "version": "placement-execution-1"
+      },
+      {
+        "id": "greedy",
+        "version": "placement-execution-1"
+      },
+      {
+        "id": "placement_search",
+        "version": "placement-execution-1"
+      }
+    ],
+    "metrics": [
+      "lines",
+      "holes",
+      "height",
+      "execution_margin",
+      "input_pressure"
+    ],
+    "gates": [
+      "schema",
+      "runtime",
+      "replay"
+    ],
+    "seed_set": {
+      "mode": "fixed",
+      "values": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    }
+  },
+  "provenance": {
+    "rules_version": "falling_blocks_v0.1",
+    "assumptions": []
+  },
+  "adapter": {
+    "id": "web",
+    "version": "0.1"
+  },
+  "extensions": {}
+}

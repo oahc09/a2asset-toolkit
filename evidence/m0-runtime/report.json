@@ -1,0 +1,106 @@
+{
+  "timestamp": "2026-11-01T12:50:06.875Z",
+  "sdkSha256": "dec7d3c73ff0eb57e4462f1941168261fda9cc713f46401dc9a02753a833fba3",
+  "status": "PASS",
+  "sourceHashes": {
+    "examples/m0-runtime/main.mjs": "f819045eb3ba4907efb6ae2824bebfbe210947ca4709895a17c9e0cf3c339408",
+    "examples/m0-runtime/manifest-check.mjs": "2c30f681797e642ff3a8268060dbe8dd76fe13b13c1ea7a89140f00b87e02d9e",
+    "examples/m0-runtime/asset-manifest.json": "ee5f6121fe3376ad07e71d9699f1858330e72cee1e1eb267ff7b3790a3135448",
+    "fixtures/game-specs/arcade_shooter.json": "5b71ffef503579e5cde3f21bafcc42fb0b70c1213e6f6dc334cbfc7b7cf4b7b1",
+    "scripts/m0-runtime-browser.mjs": "cc2c66fc583f743b6359f59cdaccd6fc70db3a90f5ac5bb3121930cce1b3174f"
+  },
+  "consoleErrors": [],
+  "result": {
+    "status": "PASS",
+    "checks": [
+      {
+        "name": "validated manifest player.main binding",
+        "pass": true
+      },
+      {
+        "name": "actual PNG fetched",
+        "pass": true
+      },
+      {
+        "name": "PNG byte hash verified",
+        "pass": true
+      },
+      {
+        "name": "texture contributes actual framebuffer pixels",
+        "pass": true
+      },
+      {
+        "name": "WebGL error free",
+        "pass": true
+      }
+    ],
+    "errors": [],
+    "pixel": [
+      40,
+      220,
+      180,
+      255
+    ],
+    "device": {
+      "webgl2": true,
+      "maxTextureSize": 16384,
+      "renderer": "WebKit WebGL",
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Safari/605.1.15",
+      "canvas": [
+        400,
+        400
+      ]
+    },
+    "loadMs": 1209,
+    "engineExports": [
+      {
+        "name": "createAirApp",
+        "present": true
+      },
+      {
+        "name": "createUICanvas",
+        "present": true
+      },
+      {
+        "name": "Texture2D",
+        "present": true
+      },
+      {
+        "name": "ImageAsset",
+        "present": true
+      },
+      {
+        "name": "createAirTextureSprite",
+        "present": true
+      },
+      {
+        "name": "SpriteFrame",
+        "present": true
+      },
+      {
+        "name": "Animation",
+        "present": true
+      },
+      {
+        "name": "AudioSource",
+        "present": true
+      },
+      {
+        "name": "AudioService",
+        "present": true
+      },
+      {
+        "name": "Font",
+        "present": true
+      },
+      {
+        "name": "AssetBank",
+        "present": true
+      }
+    ]
+  },
+  "disposal": {
+    "released": true
+  },
+  "browserClosed": true
+}

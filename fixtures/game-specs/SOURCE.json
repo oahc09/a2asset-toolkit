@@ -1,0 +1,38 @@
+{
+  "repository": "https://github.com/oahc09/game-design",
+  "revision": "637e383783123d97bc05b235f1a5be125a9faba1",
+  "license": "MIT",
+  "licenseFile": "LICENSE.game-design",
+  "files": [
+    {
+      "path": "arcade_shooter.json",
+      "upstreamPath": "examples/arcade_shooter/spec.json",
+      "sha256": "5b71ffef503579e5cde3f21bafcc42fb0b70c1213e6f6dc334cbfc7b7cf4b7b1"
+    },
+    {
+      "path": "block_puzzle.json",
+      "upstreamPath": "examples/block_puzzle/spec.json",
+      "sha256": "dd8933d7bc78b2d09193e2321f813a5a35c96dac5a49983e0727099e34002711"
+    },
+    {
+      "path": "falling_blocks.json",
+      "upstreamPath": "examples/falling_blocks/spec.json",
+      "sha256": "8ed86c5d53f6b36ba5cc535c24116482c664497d6d4e513f17662509a418f9e5"
+    },
+    {
+      "path": "match3.json",
+      "upstreamPath": "examples/match3/spec.json",
+      "sha256": "bf2c638547ea318dad7a9044a2009f3e00e2dfc87b08876dcce8a2c2e5bef144"
+    },
+    {
+      "path": "merge2048.json",
+      "upstreamPath": "examples/merge2048/spec.json",
+      "sha256": "99f56fcd200a641340f50ac5369bdcb848a0ee38d0a2ed49f38608f06d53f06f"
+    },
+    {
+      "path": "sokoban.json",
+      "upstreamPath": "examples/sokoban/spec.json",
+      "sha256": "2e22857237810319c705b266553f64a7bfd48b8d285276f3d4709df711009110"
+    }
+  ]
+}

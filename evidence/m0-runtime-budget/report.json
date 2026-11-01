@@ -1,0 +1,60 @@
+{
+  "timestamp": "2026-11-01T12:53:12.474Z",
+  "scope": "single-cloud-WPE-development-only",
+  "status": "PASS",
+  "sourceSha256": "4c6a9c6eb5b5ab22e93725dab29701d6cd485889a8ce612717faac9bcca6e63d",
+  "measurement": {
+    "webgl2": true,
+    "maxTextureSize": 16384,
+    "renderer": "WebKit WebGL",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Safari/605.1.15",
+    "allocation": {
+      "width": 2048,
+      "height": 2048,
+      "internalFormat": "RGBA8",
+      "mipLevels": 1,
+      "estimatedDecodedBytes": 16777216,
+      "allocated": true,
+      "framebufferComplete": true,
+      "allocationGlError": 0,
+      "finalGlError": 0,
+      "pixel": [
+        64,
+        128,
+        191,
+        255
+      ],
+      "elapsedMs": 22,
+      "released": true
+    },
+    "media": {
+      "png": {
+        "status": "PASS",
+        "evidence": "actual 32x32 local PNG image.decode"
+      },
+      "webp": {
+        "status": "NOT_RUN",
+        "reason": "not in the selected M0 profile; no real decoder fixture"
+      },
+      "wav": {
+        "status": "NOT_RUN",
+        "canPlayType": "probably"
+      },
+      "ogg": {
+        "status": "NOT_RUN",
+        "canPlayType": "probably"
+      },
+      "mp3": {
+        "status": "NOT_RUN",
+        "canPlayType": "maybe"
+      },
+      "woff2": {
+        "status": "NOT_RUN",
+        "fontFaceAPI": true,
+        "reason": "no licensed WOFF2 fixture; API presence is not decode or glyph proof"
+      }
+    },
+    "pass": true
+  },
+  "browserClosed": true
+}

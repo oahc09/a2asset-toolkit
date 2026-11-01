@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "1.0.0",
+  "gameId": "merge2048-reference",
+  "genre": "merge2048",
+  "slots": {
+    "board.floor": {
+      "kind": "sprite2d",
+      "role": "tile.floor",
+      "required": true,
+      "requiredStates": [
+        "idle"
+      ],
+      "fallbackPolicy": "none"
+    },
+    "tile.number": {
+      "kind": "sprite2d",
+      "role": "tile.number",
+      "required": true,
+      "requiredStates": [
+        "idle"
+      ],
+      "fallbackPolicy": "none"
+    }
+  }
+}

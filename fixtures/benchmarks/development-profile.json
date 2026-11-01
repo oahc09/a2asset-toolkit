@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "1.0.0",
+  "profileId": "m0-wpe-development-preview",
+  "target": {
+    "platform": "web",
+    "engine": "cocosairjs",
+    "renderer": "webgl2",
+    "runtimeVersion": "2886aa3a3d740fd53248f2ed517d090faa5f5d08"
+  },
+  "mode": "preview",
+  "limits": {
+    "maxTextureSize": 2048,
+    "maxBundleBytes": 16777216,
+    "maxAtlasCount": 1,
+    "maxSingleFileBytes": 8388608
+  },
+  "allowFormats": [
+    "png",
+    "json"
+  ],
+  "colorSpace": "srgb",
+  "alphaMode": "straight"
+}

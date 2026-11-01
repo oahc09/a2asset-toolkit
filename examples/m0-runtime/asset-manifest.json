@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0.0",
+  "gameId": "arcade-shooter-m0",
+  "profileId": "webgl2-preview",
+  "buildFingerprint": "0597d43dc9ad7e7227dc05eedec73c2efca640e0d70b4b27a93a167dd3918348",
+  "bindings": {
+    "player.main": {
+      "assetId": "m0.geometry-player",
+      "kind": "sprite2d",
+      "files": [
+        "assets/player.png"
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "logicalSize": [
+        4,
+        4
+      ],
+      "placeholder": true
+    }
+  },
+  "files": [
+    {
+      "path": "assets/player.png",
+      "sha256": "0597d43dc9ad7e7227dc05eedec73c2efca640e0d70b4b27a93a167dd3918348",
+      "bytes": 168,
+      "mediaType": "image/png"
+    }
+  ]
+}

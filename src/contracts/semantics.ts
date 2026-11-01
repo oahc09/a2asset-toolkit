@@ -37,7 +37,7 @@ export function validateSemantics(name: ContractName, input: unknown, context: C
    if(/LicenseRef-|NOASSERTION/.test(p.licenseExpression)) fail('E_LICENSE_UNKNOWN','/provenance/licenseExpression','Custom or unknown licenses require an external human rights conclusion; unsupported in M0');
   }
   const states=x.capabilities.states??[], actual=Object.keys(x.stateFrames??{});
-  if(states.length && (states.some((s:string)=>!actual.includes(s))||actual.some(s=>!states.includes(s)))) fail('E_REFERENCE_MISSING','/stateFrames','State capability names must match real frame mappings');
+  if(states.some((s:string)=>!actual.includes(s))||actual.some(s=>!states.includes(s))) fail('E_REFERENCE_MISSING','/stateFrames','State capability names must match real frame mappings');
   for(const [state,clip] of Object.entries(x.stateFrames??{}) as [string,Json][]) clip.frames.forEach((f:Json,i:number)=>{if(f.sourceIndex>=x.sources.length) fail('E_REFERENCE_MISSING',`/stateFrames/${state}/frames/${i}/sourceIndex`,'Source index outside sources');});
   if(x.kind==='ui9slice') {const size=x.geometry?.pixelSize,n=x.nineSlice;if(!size||n.left+n.right>size[0]||n.top+n.bottom>size[1])fail('E_SCHEMA_INVALID','/nineSlice','Insets require compatible pixel dimensions');}
   if(x.kind==='vfx2d'&&x.vfx.effectKind==='procedural-approved'&&!context.approvedEffects?.includes(x.vfx.approvedEffectId))fail('E_PROCESSOR_UNSUPPORTED','/vfx','Effect ID not in frozen whitelist');
@@ -56,5 +56,10 @@ export function validateSemantics(name: ContractName, input: unknown, context: C
    if(b.atlasRegion&&(b.atlasRegion.rect[2]<=0||b.atlasRegion.rect[3]<=0))fail('E_SCHEMA_INVALID',p+'/atlasRegion','Atlas rectangle must have positive dimensions');
   }
  }
- return report(d);
+ const result=report(d);
+ if(result.status==='PASS' && (context.mode==='Production' || !['asset-definition','bundle-manifest'].includes(name))) {
+  result.status='BLOCKED';
+  result.diagnostics.push(diagnostic('E_SEMANTIC_CONTEXT_REQUIRED','','M0 local checks are not full cross-object or Production certification. Request, profile, registry and human rights review are required.','Complete the frozen semantic-rule matrix before certification.'));
+ }
+ return result;
 }
