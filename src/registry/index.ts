@@ -33,7 +33,12 @@ export class AssetRegistry {
  readonly root:string;
  constructor(root:string){this.root=resolve(root);}
  private setup(){safeDirectory(this.root);for(const p of ['store/sha256','registry/definitions','registry/history'])safeDirectory(join(this.root,p));}
- private locked<T>(fn:()=>T):T {this.setup();const lock=join(this.root,'.writer-lock');try{mkdirSync(lock,{mode:0o700});}catch{reject('E_REGISTRY_BUSY','Another writer or stale lock exists; inspect before recovery');}try{return fn();}finally{try{const {rmdirSync}=requireFs; rmdirSync(lock);}catch{}}}
+ private acquireWriterLock():()=>void {this.setup();const lock=join(this.root,'.writer-lock');try{mkdirSync(lock,{mode:0o700});}catch{reject('E_REGISTRY_BUSY','Another writer or stale lock exists; inspect before recovery');}const owned=lstatSync(lock);return ()=>{const current=lstatSync(lock);if(current.dev!==owned.dev||current.ino!==owned.ino||!current.isDirectory()||current.isSymbolicLink())reject('E_REGISTRY_IO','Writer lock ownership changed; never remove another lock');requireFs.rmdirSync(lock);};}
+ private locked<T>(fn:()=>T):T {const release=this.acquireWriterLock();try{return fn();}finally{release();}}
+ /** Short publication transaction sharing the writer exclusion used by every state change.
+  * Await the callback before releasing; callers must do expensive processing/validation first.
+  * No lock stealing or stale-lock recovery. Read operations are allowed inside the guard. */
+ async withPublicationGuard<T>(fn:()=>T|Promise<T>):Promise<T>{const release=this.acquireWriterLock();try{return await fn();}finally{release();}}
  private key(key:string){if(!keyPattern.test(key)||key.length>180)reject('E_SCHEMA_INVALID','Invalid assetId@version');return key;}
  private recordPath(key:string){return join(this.root,'registry/definitions',this.key(key)+'.json');}
  private blobPath(digest:string){if(!/^[a-f0-9]{64}$/.test(digest))reject('E_LOCK_DRIFT','Invalid digest');return join(this.root,'store/sha256',digest.slice(0,2),digest);}

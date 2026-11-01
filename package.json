@@ -9,13 +9,15 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "test": "npm run build && node --import tsx --test tests/**/*.test.ts && npm run test:runtime",
+    "test": "npm run build && node --import tsx --test tests/**/*.test.ts && node --test tests/runtime/*.test.mjs",
     "test:contracts": "node --import tsx --test tests/contracts/*.test.ts",
     "test:bridge": "node --import tsx --test tests/bridge/*.test.ts",
-    "test:runtime": "node --test tests/runtime/*.test.mjs",
+    "test:runtime": "npm run build && node --test tests/runtime/*.test.mjs",
     "build": "node scripts/build.mjs",
     "test:cli": "npm run build && node --import tsx --test tests/cli/*.test.ts",
-    "verify:package": "node scripts/verify-package.mjs"
+    "verify:package": "node scripts/verify-package.mjs",
+    "test:browser": "npm run build && node tests/runtime/runtime-browser.mjs",
+    "test:scenarios": "npm run build && node tests/runtime/four-scenarios-browser.mjs"
   },
   "dependencies": {
     "ajv": "8.18.0",

@@ -1,9 +1,9 @@
 import {importAssets} from '../core/import-assets.js';
-import {resolve} from 'node:path';
+import {importBatch} from '../core/import-batch.js';
+import {resolve,dirname} from 'node:path';
 import {resolveAssets} from '../resolver/index.js';
 import {buildBundle,validatePackage,capabilities} from '../builder/index.js';
-import {atomicFile,within} from '../builder/io.js';
-import {readFile,lstat} from 'node:fs/promises';
+import {atomicFile,within,readSafe} from '../builder/io.js';
 import {AssetRegistry,type ReviewRecord,type AssetState} from '../registry/index.js';
 import {parseArguments} from './arguments.js';
 import {validateContract,diagnostic,report,type Report} from '../contracts/validate.js';
@@ -16,14 +16,13 @@ export function exitCode(r:Report):number {
  return 2;
 }
 export async function readJson(path:string):Promise<unknown>{
- const st=await lstat(path);if(!st.isFile()||st.isSymbolicLink()||st.size>2*1024*1024)throw Error('JSON input must be a regular nonsymlink file ≤ 2 MiB');
- return JSON.parse(await readFile(path,'utf8'));
+ return JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(await readSafe(path,2*1024*1024)));
 }
 export async function run(argv:readonly string[], options:{signal?:AbortSignal}={}):Promise<Report>{
  try {
   if(options.signal?.aborted)return report([diagnostic('E_CANCELLED','','Operation cancelled')]);
   const a=parseArguments(argv);
-  if(a.command==='help')return {...report([]),help:'a2asset inspect <request.json> --json; import <directory|zip> --definition <json> --registry <path>; registry list|get|approve|publish|quarantine|deprecate ...'} as Report;
+  if(a.command==='help')return {...report([]),help:'a2asset inspect <request.json> --json; import <directory|zip> --definition <json> --registry <path>; import-batch <batch.json> --registry <path> (jobs: id,path,definition; stopOnError defaults true); registry list|get|approve|publish|quarantine|deprecate ...; resolve|build|validate ...'} as Report;
   if(a.command==='inspect'){
    if(a.positional.length!==1)throw Error('inspect requires exactly one request JSON');
    return validateContract('game-asset-request',await readJson(a.positional[0]));
@@ -51,6 +50,15 @@ export async function run(argv:readonly string[], options:{signal?:AbortSignal}=
    if(result.status==='PASS'&&typeof a.options.out==='string'){const output=within(process.cwd(),a.options.out);await atomicFile(output,Buffer.from(JSON.stringify(result.assetBinding,null,2)+'\n'));result.artifactPaths.push(output);}
    return result;
   }
+  if(a.command==='import-batch'){
+   if(a.positional.length!==1||typeof a.options.registry!=='string')throw Error('import-batch requires one batch JSON and --registry');
+   const batch=await readJson(a.positional[0]) as any;
+   if(!batch||typeof batch!=='object'||Array.isArray(batch)||Object.keys(batch).some(k=>!['jobs','stopOnError'].includes(k))||!Array.isArray(batch.jobs))throw Error('Batch JSON contains jobs and optional stopOnError only');
+   const base=dirname(resolve(a.positional[0]));
+   // Only path resolution happens here; Core validates the whole envelope before any import.
+   const jobs=batch.jobs.map((job:any)=>job&&typeof job==='object'&&!Array.isArray(job)&&typeof job.path==='string'?{...job,path:resolve(base,job.path)}:job);
+   return importBatch({registry:a.options.registry,jobs,stopOnError:batch.stopOnError,signal:options.signal});
+  }
   if(a.command==='import'){
    if(a.positional.length!==1||typeof a.options.definition!=='string'||typeof a.options.registry!=='string')throw Error('import requires one directory or ZIP, --definition JSON and --registry directory');
    return importAssets({path:a.positional[0],definition:await readJson(a.options.definition),registry:a.options.registry,signal:options.signal});
@@ -67,5 +75,5 @@ export async function run(argv:readonly string[], options:{signal?:AbortSignal}=
    return registry.transition(key,states[sub],review);
   }
   return report([diagnostic('E_UNSUPPORTED_COMMAND' ,'',`Command ${a.command} is not implemented in this build`)]);
- }catch(e){return report([diagnostic('E_SCHEMA_INVALID','',e instanceof Error?e.message:'Invalid input')]);}
+ }catch(e){const message=e instanceof Error?e.message:'Invalid input';const code=/^(E_[A-Z_]+):/.exec(message)?.[1]??((e as any)?.code==='ELOOP'?'E_SECURITY_UNSAFE_CONTENT':['EACCES','EPERM'].includes((e as any)?.code)?'E_SYSTEM_IO':'E_SCHEMA_INVALID');return report([diagnostic(code,'',message)]);}
 }
