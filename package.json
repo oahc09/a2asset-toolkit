@@ -14,7 +14,8 @@
     "test:bridge": "node --import tsx --test tests/bridge/*.test.ts",
     "test:runtime": "node --test tests/runtime/*.test.mjs",
     "build": "node scripts/build.mjs",
-    "test:cli": "npm run build && node --import tsx --test tests/cli/*.test.ts"
+    "test:cli": "npm run build && node --import tsx --test tests/cli/*.test.ts",
+    "verify:package": "node scripts/verify-package.mjs"
   },
   "dependencies": {
     "ajv": "8.18.0",
@@ -40,6 +41,10 @@
     ".": {
       "types": "./dist/src/index.d.ts",
       "import": "./dist/src/index.js"
+    },
+    "./runtime": {
+      "types": "./dist/src/runtime/index.d.ts",
+      "import": "./dist/src/runtime/index.js"
     }
   },
   "files": [

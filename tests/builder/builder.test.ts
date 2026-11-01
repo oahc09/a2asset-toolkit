@@ -23,3 +23,8 @@ test('incremental rebuild changes one sprite without reprocessing unrelated audi
  const sprite=structuredClone(base);sprite.version='1.0.1';const image=PNG.sync.read(readFileSync('examples/m0-runtime/assets/player.png'));image.data[0]=123;const changed=PNG.sync.write(image);sprite.sources=[{path:'sprite.png',mediaType:'image/png',sha256:sha(changed)}];publish(sprite,changed);i.resolve.bindings!.bindings['player.main'].version='1.0.1';
  const second=await buildBundle(i);assert.equal(second.status,'PASS',JSON.stringify(second.diagnostics));assert.equal(second.nodes.find(n=>n.id==='process:music.test@1.0.0')!.cache,'hit');assert.equal(second.nodes.find(n=>n.id==='process:ships.blue-falcon@1.0.1')!.cache,'miss');assert.notEqual(first.buildFingerprint,second.buildFingerprint);
 }));
+test('late cancellation during final registry recheck preserves old bundle and cleans staging',()=>scenario(async(root,i)=>{
+ assert.equal((await buildBundle(i)).status,'PASS');const previous=readFileSync(join(root,'output/asset-manifest.json'));const c=new AbortController();i.signal=c.signal;
+ const list=i.registry.list.bind(i.registry);let calls=0;i.registry.list=((...args:any[])=>{const result=list(args[0]);if(++calls===2)c.abort();return result;}) as typeof i.registry.list;
+ const result=await buildBundle(i);assert.equal(result.status,'FAIL');assert.equal(result.diagnostics[0]?.code,'E_CANCELLED');assert.deepEqual(readFileSync(join(root,'output/asset-manifest.json')),previous);assert.equal(readdirSync(root).some(n=>n.includes('.staging-')||n.includes('.previous-')),false);
+}));
