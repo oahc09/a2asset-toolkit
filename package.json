@@ -19,7 +19,9 @@
   "dependencies": {
     "ajv": "8.18.0",
     "ajv-formats": "3.0.1",
+    "fontkit": "2.0.4",
     "pngjs": "7.0.0",
+    "sharp": "0.35.5",
     "yauzl": "3.4.0"
   },
   "devDependencies": {
@@ -31,5 +33,19 @@
   },
   "bin": {
     "a2asset": "scripts/a2asset.mjs"
-  }
+  },
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "scripts/a2asset.mjs",
+    "LICENSE",
+    "README.md"
+  ]
 }

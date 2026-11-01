@@ -46,3 +46,12 @@ success, changed CRC, malformed type, oversized dimensions, original unchanged,
 text/JSON checks, symlinks, path escapes, case collisions, ZIP CRC/duplicates/
 ratio/count/size and cancellation/deadline scratch cleanup. Safety fixtures are
 synthetic test inputs, never represented as human-approved artwork.
+
+## Explicit M2 media opt-in
+
+Default M1 allowed formats remain PNG/JSON/TXT. `InspectOptions.allowFormats` may
+explicitly enable the closed enum png/json/txt/webp/wav/ogg/mp3/woff2. When present,
+only listed extensions pass. Media is verified through shared `src/media/inspect`
+(signature **and** full traditional decoder), then original input bytes/hashes are
+returned to Registry. No arbitrary decoder/command/script is accepted. Font and
+audio decoded inspection does not authorize rights or certify browser playback.

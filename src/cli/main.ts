@@ -1,6 +1,10 @@
+import {importAssets} from '../core/import-assets.js';
+import {resolve} from 'node:path';
+import {resolveAssets} from '../resolver/index.js';
+import {buildBundle,validatePackage,capabilities} from '../builder/index.js';
+import {atomicFile,within} from '../builder/io.js';
 import {readFile,lstat} from 'node:fs/promises';
 import {AssetRegistry,type ReviewRecord,type AssetState} from '../registry/index.js';
-import {inspectDirectory,inspectArchive} from '../importer/index.js';
 import {parseArguments} from './arguments.js';
 import {validateContract,diagnostic,report,type Report} from '../contracts/validate.js';
 export function exitCode(r:Report):number {
@@ -24,26 +28,32 @@ export async function run(argv:readonly string[], options:{signal?:AbortSignal}=
    if(a.positional.length!==1)throw Error('inspect requires exactly one request JSON');
    return validateContract('game-asset-request',await readJson(a.positional[0]));
   }
+  if(a.command==='validate'){
+   if(a.positional.length!==1)throw Error('validate requires one package directory');
+   return validatePackage(a.positional[0],typeof a.options.profile==='string'?await readJson(a.options.profile) as Record<string,any>:undefined);
+  }
+  if(a.command==='resolve'||a.command==='build'){
+   if(a.positional.length!==1||typeof a.options.registry!=='string'||typeof a.options.visual!=='string'||typeof a.options.profile!=='string')throw Error('resolve/build requires request JSON, --registry, --visual and --profile');
+   const input:Record<string,any>={request:await readJson(a.positional[0]),visual:await readJson(a.options.visual),profile:await readJson(a.options.profile)};
+   for(const key of ['bindings','theme','genre','themes'])if(typeof a.options[key]==='string')input[key]=await readJson(a.options[key] as string);
+   if(typeof a.options['preview-config']==='string'){
+    const config=await readJson(a.options['preview-config']) as any;
+    if(!config||typeof config!=='object'||Array.isArray(config)||Object.keys(config).some(k=>!['fallbacks','approvedModules'].includes(k))||!config.fallbacks||typeof config.fallbacks!=='object'||Array.isArray(config.fallbacks)||!Array.isArray(config.approvedModules)||config.approvedModules.some((id:unknown)=>id!=='geometry.triangle-v1')||Object.values(config.fallbacks).some(id=>id!=='geometry.triangle-v1'))throw Error('Preview config permits only explicit geometry.triangle-v1 fallback mappings');
+    input.previewFallbacks=config.fallbacks;input.approvedPreviewModules=config.approvedModules;
+   }
+   const registry=new AssetRegistry(a.options.registry);
+   if(a.command==='build'){
+    if(typeof a.options.out!=='string')throw Error('build requires --out within current working directory');
+    return buildBundle({registry,resolve:input as any,workspace:process.cwd(),out:a.options.out,cacheDir:typeof a.options.cache==='string'?a.options.cache:undefined,signal:options.signal,gameSpec:typeof a.options.game==='string'?await readJson(a.options.game):undefined});
+   }
+   const records=registry.list();if(records.status!=='PASS')return records;
+   const result=resolveAssets({...input,registry:records.records!,processorCapabilities:capabilities} as any);
+   if(result.status==='PASS'&&typeof a.options.out==='string'){const output=within(process.cwd(),a.options.out);await atomicFile(output,Buffer.from(JSON.stringify(result.assetBinding,null,2)+'\n'));result.artifactPaths.push(output);}
+   return result;
+  }
   if(a.command==='import'){
    if(a.positional.length!==1||typeof a.options.definition!=='string'||typeof a.options.registry!=='string')throw Error('import requires one directory or ZIP, --definition JSON and --registry directory');
-   const definition=await readJson(a.options.definition);
-   const schema=validateContract('asset-definition',definition);if(schema.status!=='PASS')return schema;
-   const def=definition as Record<string,any>;
-   const result=a.positional[0].toLowerCase().endsWith('.zip')?await inspectArchive(a.positional[0],options):await inspectDirectory(a.positional[0],options);
-   if(result.status!=='PASS')return {...result,files:undefined} as Report;
-   for(const f of [...def.sources,...(def.variants??[])]){
-    const m=result.metadata.find(m=>m.path===f.path);
-    if(!m)return report([diagnostic('E_REFERENCE_MISSING','/sources',`Missing inspected file ${f.path}`)]);
-    if((f.mediaType&&f.mediaType!==m.mediaType)||(f.width!==undefined&&f.width!==m.width)||(f.height!==undefined&&f.height!==m.height))return report([diagnostic('E_SECURITY_UNSAFE_CONTENT','/sources','Declared media type or dimensions differ from decoded source')]);
-   }
-   if(def.geometry?.pixelSize){const m=result.metadata.find(m=>m.path===def.sources[0].path);if(m?.width!==def.geometry.pixelSize[0]||m?.height!==def.geometry.pixelSize[1])return report([diagnostic('E_SECURITY_UNSAFE_CONTENT','/geometry/pixelSize','Geometry differs from decoded source')]);}
-   if(options.signal?.aborted)return report([diagnostic('E_CANCELLED','','Operation cancelled')]);
-   const registry=new AssetRegistry(a.options.registry);
-   const names=[...def.sources,...(def.variants??[]),{path:def.provenance.licenseEvidencePath}].map((f:{path:string})=>f.path);
-   const selected=new Map<string,Uint8Array>();for(const name of names){const bytes=result.files.get(name);if(bytes)selected.set(name,bytes);}
-   const imported=registry.importDefinition(definition,selected);
-   if(imported.status!=='PASS'||!imported.assetKey)return imported;
-   return imported.record?.state==='imported'?registry.transition(imported.assetKey,'inspected'):imported;
+   return importAssets({path:a.positional[0],definition:await readJson(a.options.definition),registry:a.options.registry,signal:options.signal});
   }
   if(a.command==='registry'){
    if(typeof a.options.registry!=='string')throw Error('registry requires --registry directory');

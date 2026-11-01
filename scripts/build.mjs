@@ -3,3 +3,5 @@ const p=spawnSync(process.execPath,['node_modules/typescript/bin/tsc','-p','tsco
 await mkdir('dist/schemas',{recursive:true});await cp('schemas','dist/schemas',{recursive:true});
 
 await cp('src/importer/png-worker.mjs','dist/src/importer/png-worker.mjs');
+
+await mkdir('dist/src/media',{recursive:true});await cp('src/media/worker.mjs','dist/src/media/worker.mjs');

@@ -1,4 +1,4 @@
-# Offline SDK / CLI (M1)
+# Offline SDK / CLI (M1–M2)
 
 Install locked dependencies, then `npm run build`. The compiled CLI runs without
 tsx or TypeScript transpilation at runtime. It writes one JSON object to stdout,
@@ -37,3 +37,30 @@ writes a JSON cancellation result rather than leave a partial registry commit.
 A trusted private local registry root is required; it is not a shared multi-user
 hostile filesystem service. No network fetch, upload, script execution from asset
 packs, AI provider, or automatic download is present.
+
+## Resolve, build, validate
+
+```sh
+node scripts/a2asset.mjs resolve request.json --visual visual.json --profile profile.json --registry ./.a2asset --out bindings.json
+node scripts/a2asset.mjs build request.json --visual visual.json --profile profile.json --bindings bindings.json --registry ./.a2asset --out ./bundle
+node scripts/a2asset.mjs validate ./bundle --profile profile.json
+```
+
+`--theme` and `--genre` accept local contract JSON files, not remote IDs.
+`--themes` accepts the JSON array containing the inheritance closure.
+`--preview-config` is a closed object with `fallbacks` (slot → registered module
+ID) and `approvedModules` (explicit finite allowlist); no scripts are loaded.
+Preview intents never become invented production asset IDs. `--game` embeds an
+explicit game JSON file; the builder does not synthesize gameplay.
+
+Resolve stdout is the diagnostic report; `--out` writes only the standard
+AssetBinding contract for subsequent build input. Output/cache/registry paths
+must be disjoint and output stays below the workspace. Atomic replacement only
+replaces a previously valid bundle, not an arbitrary existing user directory.
+Cache payloads have separately stored private receipts and exact source/review/
+toolchain inputs; revocation is checked again before publish.
+
+Core exports are available from the package root after build, including
+`importAssets`, `resolveAssets`, `processMediaAsset`, `buildBundle`, and
+`validatePackage`. Runtime decoding of optional audio requires local ffmpeg and
+ffprobe; missing tools fail explicitly. No decoder downloads are performed.
