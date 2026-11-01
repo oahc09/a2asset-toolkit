@@ -9,3 +9,7 @@
 - Combined first run (before sixth SDK regression): 17 PASS; `npm run typecheck` PASS.
 
 No decoder or Registry checks were bypassed by extracting SDK import: positive tests stop at inspected, and all approval data in unrelated Builder fixtures is explicitly synthetic. This review does not claim genuine rights approval, browser playback certification or a completed production M2 gate.
+
+## Repair verified 13:45 UTC
+
+Implementer corrected source-plus-variant codec selection and controlled extension fallback when optional variant mediaType is absent. The sixth SDK case now verifies **both** forms with actual WebP bytes and passes. CLI 4 + SDK 6 = **10 PASS / 0 FAIL / 0 SKIP**, typecheck PASS. No implementation changes made by reviewer; tests/docs now frozen for integration checkpoint.

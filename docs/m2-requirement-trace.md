@@ -1,6 +1,6 @@
 # M2 requirement trace — implementation vs verification vs external input
 
-Checkpoint: 2026-11-01 13:44 UTC. Taskbook §6/§14, latest supplied v1 baseline.
+Checkpoint: 2026-11-01 13:45 UTC. Taskbook §6/§14, latest supplied v1 baseline.
 This file is a scope audit, not a release certificate. Parallel integration may
 close gaps after this timestamp; update evidence rather than reclassify silently.
 
@@ -32,10 +32,11 @@ close gaps after this timestamp; update evidence rather than reclassify silently
 
 Theme-closure/explicit-preview CLI inputs and targeted incremental Sprite/WAV
 measurement are now closed with actual tests, not deferred to human approval.
-SDK extraction review found one remaining actionable defect: format allowlist
-considers sources but not variants; valid PNG source + WebP variant fails import
-(`tests/review/m2-sdk-import.test.ts`: 5 PASS / 1 FAIL before repair).
-Re-run this regression and complete media/CLI package integration after repair.
+SDK extraction review found and implementer repaired the variant codec allowlist.
+Direct SDK suite now 6 PASS including WebP variants both with explicit MIME and
+without MIME (controlled extension selection followed by actual decoding).
+No remaining software defect from this narrow follow-up; this does not eliminate
+the integration/runtime verification and genuine human approval requirements below.
 These do not require a human artist or remote environment and should not be
 reported as blocked solely by missing artwork approvals.
 
@@ -67,3 +68,7 @@ pixels-per-logical-unit equality, not permanently marked unsupported.
 ## 13:44 independent follow-up
 
 `node --import tsx --test tests/review/m2-cli-options.test.ts tests/review/m2-sdk-import.test.ts tests/builder/*.test.ts` initially 17 PASS before addition of the sixth SDK codec-variant regression. `npm run typecheck` PASS. SDK first five checks verify decoded MIME/dimensions, idempotency, cancellation, hash integrity and no automatic approval. The new sixth case exposes a legitimate supported-format variant rejection, not an approval bypass; parent notified for correction.
+
+### 13:45 repair verification
+
+CLI options + direct SDK import: **10 PASS / 0 FAIL / 0 SKIP**, including both explicit-MIME and optional-MIME WebP variant imports. `npm run typecheck` PASS. Earlier 5/1 failure above is historical pre-fix evidence and no longer an open defect. Scope frozen for parent full-suite checkpoint.

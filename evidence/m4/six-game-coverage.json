@@ -1,0 +1,272 @@
+{
+  "scope": "Six real pinned upstream fixture requests; no actual approved asset registry supplied. Not 50 samples.",
+  "schemaVersion": "1.0.0",
+  "status": "BLOCKED",
+  "diagnostics": [
+    {
+      "code": "E_QUALITY_EVIDENCE_MISSING",
+      "severity": "error",
+      "path": "/slots",
+      "message": "20 required slots unresolved; counts are not build certification.",
+      "remediation": "Correct the input and rerun validation."
+    }
+  ],
+  "artifactPaths": [],
+  "totalSlots": 20,
+  "boundSlots": 0,
+  "missingRequired": 20,
+  "missingRate": 1,
+  "reuseRate": 0,
+  "genresPresent": [
+    "arcade_shooter",
+    "block_puzzle",
+    "falling_blocks",
+    "match3",
+    "merge2048",
+    "sokoban"
+  ],
+  "inputs": [
+    {
+      "path": "fixtures/game-requests/sokoban.json",
+      "sha256": "cff9a4b8cde4125af53c0090b821e8e2352116f6f301618d9e5536a0e76b7647",
+      "gameId": "sokoban-reference",
+      "slots": [
+        {
+          "slot": "board.floor",
+          "kind": "sprite2d",
+          "role": "tile.floor",
+          "required": true,
+          "requiredStates": [
+            "idle"
+          ],
+          "fallbackPolicy": "none"
+        },
+        {
+          "slot": "board.wall",
+          "kind": "sprite2d",
+          "role": "tile.wall",
+          "required": true,
+          "requiredStates": [
+            "idle"
+          ],
+          "fallbackPolicy": "none"
+        },
+        {
+          "slot": "board.goal",
+          "kind": "sprite2d",
+          "role": "tile.goal",
+          "required": true,
+          "requiredStates": [
+            "idle"
+          ],
+          "fallbackPolicy": "none"
+        },
+        {
+          "slot": "box.main",
+          "kind": "sprite2d",
+          "role": "item.box",
+          "required": true,
+          "requiredStates": [
+            "idle"
+          ],
+          "fallbackPolicy": "none"
+        },
+        {
+          "slot": "player.main",
+          "kind": "sprite2d",
+          "role": "actor.player",
+          "required": true,
+          "requiredStates": [
+            "idle"
+          ],
+          "fallbackPolicy": "none"
+        }
+      ]
+    },
+    {
+      "path": "fixtures/game-requests/match3.json",
+      "sha256": "fa365587dfe9d7a8d875679f8bb998f7c7aa97c36b7987fdad94f44c369c89df",
+      "gameId": "match3-reference",
+      "slots": [
+        {
+          "slot": "board.floor",
+          "kind": "sprite2d",
+          "role": "tile.floor",
+          "required": true,
+          "requiredStates": [
+            "idle"
+          ],
+          "fallbackPolicy": "none"
+        },
+        {
+          "slot": "gem.color-0",
+          "kind": "sprite2d",
+          "role": "item.gem",
+          "required": true,
+          "requiredStates": [
+            "idle"
+          ],
+          "fallbackPolicy": "none"
+        },
+        {
+          "slot": "gem.color-1",
+          "kind": "sprite2d",
+          "role": "item.gem",
+          "required": true,
+          "requiredStates": [
+            "idle"
+          ],
+          "fallbackPolicy": "none"
+        },
+        {
+          "slot": "gem.color-2",
+          "kind": "sprite2d",
+          "role": "item.gem",
+          "required": true,
+          "requiredStates": [
+            "idle"
+          ],
+          "fallbackPolicy": "none"
+        },
+        {
+          "slot": "gem.color-3",
+          "kind": "sprite2d",
+          "role": "item.gem",
+          "required": true,
+          "requiredStates": [
+            "idle"
+          ],
+          "fallbackPolicy": "none"
+        }
+      ]
+    },
+    {
+      "path": "fixtures/game-requests/merge2048.json",
+      "sha256": "05a0c429130d05506a990bb788a358326bc0e4a9ebb53b16a89ba403769022ce",
+      "gameId": "merge2048-reference",
+      "slots": [
+        {
+          "slot": "board.floor",
+          "kind": "sprite2d",
+          "role": "tile.floor",
+          "required": true,
+          "requiredStates": [
+            "idle"
+          ],
+          "fallbackPolicy": "none"
+        },
+        {
+          "slot": "tile.number",
+          "kind": "sprite2d",
+          "role": "tile.number",
+          "required": true,
+          "requiredStates": [
+            "idle"
+          ],
+          "fallbackPolicy": "none"
+        }
+      ]
+    },
+    {
+      "path": "fixtures/game-requests/block_puzzle.json",
+      "sha256": "f79f686b89894d536b13fa208f5e7945fd9708b9f2fcfaf34d9e4c7e2fdee118",
+      "gameId": "block_puzzle-reference",
+      "slots": [
+        {
+          "slot": "board.floor",
+          "kind": "sprite2d",
+          "role": "tile.floor",
+          "required": true,
+          "requiredStates": [
+            "idle"
+          ],
+          "fallbackPolicy": "none"
+        },
+        {
+          "slot": "block.cell",
+          "kind": "sprite2d",
+          "role": "tile.block",
+          "required": true,
+          "requiredStates": [
+            "idle"
+          ],
+          "fallbackPolicy": "none"
+        }
+      ]
+    },
+    {
+      "path": "fixtures/game-requests/falling_blocks.json",
+      "sha256": "d5b94688befcf7ff83dc05adfcd8806b7e888cf5d55b9d8bc497d681b416c1cb",
+      "gameId": "falling_blocks-reference",
+      "slots": [
+        {
+          "slot": "board.floor",
+          "kind": "sprite2d",
+          "role": "tile.floor",
+          "required": true,
+          "requiredStates": [
+            "idle"
+          ],
+          "fallbackPolicy": "none"
+        },
+        {
+          "slot": "block.cell",
+          "kind": "sprite2d",
+          "role": "tile.block",
+          "required": true,
+          "requiredStates": [
+            "idle"
+          ],
+          "fallbackPolicy": "none"
+        }
+      ]
+    },
+    {
+      "path": "fixtures/game-requests/arcade_shooter.json",
+      "sha256": "986e1f6d5628cf604d2e9c5c86a90b1f038143ec791835879ba38aadceb90edf",
+      "gameId": "arcade_shooter-reference",
+      "slots": [
+        {
+          "slot": "player.main",
+          "kind": "sprite2d",
+          "role": "actor.player",
+          "required": true,
+          "requiredStates": [
+            "idle"
+          ],
+          "fallbackPolicy": "none"
+        },
+        {
+          "slot": "enemy.main",
+          "kind": "sprite2d",
+          "role": "actor.enemy",
+          "required": true,
+          "requiredStates": [
+            "idle"
+          ],
+          "fallbackPolicy": "none"
+        },
+        {
+          "slot": "bullet.player",
+          "kind": "sprite2d",
+          "role": "projectile.player",
+          "required": true,
+          "requiredStates": [
+            "idle"
+          ],
+          "fallbackPolicy": "none"
+        },
+        {
+          "slot": "bullet.enemy",
+          "kind": "sprite2d",
+          "role": "projectile.enemy",
+          "required": true,
+          "requiredStates": [
+            "idle"
+          ],
+          "fallbackPolicy": "none"
+        }
+      ]
+    }
+  ]
+}
