@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "1.0.0",
+  "gameId": "sokoban-reference",
+  "genre": "sokoban",
+  "slots": {
+    "board.floor": {
+      "kind": "sprite2d",
+      "role": "tile.floor",
+      "required": true,
+      "requiredStates": [
+        "idle"
+      ],
+      "fallbackPolicy": "none"
+    },
+    "board.wall": {
+      "kind": "sprite2d",
+      "role": "tile.wall",
+      "required": true,
+      "requiredStates": [
+        "idle"
+      ],
+      "fallbackPolicy": "none"
+    },
+    "board.goal": {
+      "kind": "sprite2d",
+      "role": "tile.goal",
+      "required": true,
+      "requiredStates": [
+        "idle"
+      ],
+      "fallbackPolicy": "none"
+    },
+    "box.main": {
+      "kind": "sprite2d",
+      "role": "item.box",
+      "required": true,
+      "requiredStates": [
+        "idle"
+      ],
+      "fallbackPolicy": "none"
+    },
+    "player.main": {
+      "kind": "sprite2d",
+      "role": "actor.player",
+      "required": true,
+      "requiredStates": [
+        "idle"
+      ],
+      "fallbackPolicy": "none"
+    }
+  }
+}

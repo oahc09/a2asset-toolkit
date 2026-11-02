@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "1.0.0",
+  "gameId": "space-shooter-basic",
+  "genre": "arcade_shooter",
+  "slots": {
+    "player.main": {
+      "kind": "sprite2d",
+      "role": "actor.player",
+      "required": true,
+      "requiredStates": [
+        "idle",
+        "hit",
+        "destroyed"
+      ],
+      "fallbackPolicy": "none",
+      "direction": "up",
+      "logicalSize": [
+        48,
+        48
+      ]
+    },
+    "enemy.basic": {
+      "kind": "sprite2d",
+      "role": "actor.enemy",
+      "required": true,
+      "requiredStates": [
+        "idle",
+        "destroyed"
+      ],
+      "fallbackPolicy": "none"
+    },
+    "bullet.player": {
+      "kind": "sprite2d",
+      "role": "projectile.player",
+      "required": true,
+      "requiredStates": [
+        "idle"
+      ],
+      "fallbackPolicy": "procedural-preview"
+    },
+    "effect.explosion": {
+      "kind": "animation2d",
+      "role": "effect.explosion",
+      "required": true,
+      "requiredStates": [
+        "play"
+      ],
+      "fallbackPolicy": "none"
+    },
+    "music.level": {
+      "kind": "audio",
+      "role": "audio.music",
+      "required": false,
+      "fallbackPolicy": "none"
+    }
+  }
+}

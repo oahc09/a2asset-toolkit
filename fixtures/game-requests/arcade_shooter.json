@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "1.0.0",
+  "gameId": "arcade_shooter-reference",
+  "genre": "arcade_shooter",
+  "slots": {
+    "player.main": {
+      "kind": "sprite2d",
+      "role": "actor.player",
+      "required": true,
+      "requiredStates": [
+        "idle"
+      ],
+      "fallbackPolicy": "none"
+    },
+    "enemy.main": {
+      "kind": "sprite2d",
+      "role": "actor.enemy",
+      "required": true,
+      "requiredStates": [
+        "idle"
+      ],
+      "fallbackPolicy": "none"
+    },
+    "bullet.player": {
+      "kind": "sprite2d",
+      "role": "projectile.player",
+      "required": true,
+      "requiredStates": [
+        "idle"
+      ],
+      "fallbackPolicy": "none"
+    },
+    "bullet.enemy": {
+      "kind": "sprite2d",
+      "role": "projectile.enemy",
+      "required": true,
+      "requiredStates": [
+        "idle"
+      ],
+      "fallbackPolicy": "none"
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "1.0.0",
+  "kitId": "arcade-shooter",
+  "version": "1.0.0",
+  "genre": "arcade_shooter",
+  "requirements": [
+    {
+      "role": "actor.player",
+      "kind": "sprite2d",
+      "required": true,
+      "requiredStates": [
+        "idle",
+        "hit",
+        "destroyed"
+      ]
+    },
+    {
+      "role": "actor.enemy",
+      "kind": "sprite2d",
+      "required": true,
+      "requiredStates": [
+        "idle",
+        "destroyed"
+      ]
+    },
+    {
+      "role": "projectile.player",
+      "kind": "sprite2d",
+      "required": true,
+      "requiredStates": [
+        "idle"
+      ]
+    },
+    {
+      "role": "effect.explosion",
+      "kind": "animation2d",
+      "required": true,
+      "requiredStates": [
+        "play"
+      ]
+    }
+  ]
+}
