@@ -1,5 +1,5 @@
 import {mkdirSync,lstatSync,readFileSync,readSync,writeFileSync,renameSync,unlinkSync,openSync,closeSync,fstatSync,fsyncSync,readdirSync,constants} from 'node:fs';
-import {resolve,join,dirname,parse} from 'node:path';
+import {resolve,join,dirname,parse,sep} from 'node:path';
 import {createHash,randomUUID} from 'node:crypto';
 import {validateContract,diagnostic,type Report} from '../contracts/validate.js';
 export type AssetState='imported'|'inspected'|'approved'|'published'|'deprecated'|'quarantined';
@@ -15,7 +15,7 @@ const allowed:Record<AssetState,AssetState[]>={imported:['inspected','quarantine
 class Refusal extends Error {constructor(public code:string,message:string){super(message)}}
 function reject(code:string,message:string):never{throw new Refusal(code,message);}
 function pathOK(p:string){if(!/^[A-Za-z0-9_.@/+\-]+$/.test(p)||p.startsWith('/')||p.split('/').some(x=>!x||x==='.'||x==='..'))reject('E_SECURITY_PATH_ESCAPE','Not a normalized relative POSIX path');}
-function safeDirectory(path:string){const abs=resolve(path);let current=parse(abs).root;for(const part of abs.slice(current.length).split('/').filter(Boolean)){current=join(current,part);try{const s=lstatSync(current);if(s.isSymbolicLink()||!s.isDirectory())reject('E_SECURITY_PATH_ESCAPE','Registry directory must not contain symlinks or non-directories');}catch(e:any){if(e.code==='ENOENT')mkdirSync(current,{mode:0o700});else throw e;}}}
+function safeDirectory(path:string){const abs=resolve(path);let current=parse(abs).root;for(const part of abs.slice(current.length).split(sep).filter(Boolean)){current=join(current,part);try{const s=lstatSync(current);if(s.isSymbolicLink()||!s.isDirectory())reject('E_SECURITY_PATH_ESCAPE','Registry directory must not contain symlinks or non-directories');}catch(e:any){if(e.code==='ENOENT')mkdirSync(current,{mode:0o700});else throw e;}}}
 function readRegular(path:string):Buffer {
  const before=lstatSync(path);if(!before.isFile()||before.isSymbolicLink()||before.nlink!==1||before.size>64*1024*1024)reject('E_SECURITY_UNSAFE_CONTENT','Not a bounded private regular file');
  const fd=openSync(path,constants.O_RDONLY|constants.O_NOFOLLOW|constants.O_NONBLOCK);

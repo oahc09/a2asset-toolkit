@@ -22,6 +22,13 @@ const require=createRequire(process.env.PLAYWRIGHT_PACKAGE||join(root,'package.j
 const report={status:'FAIL',scope:'synthetic technical integration, NOT production four-game acceptance',referenceRevision:revision,logicHashes,sdkSha256:hash(routes.get('/engine/cocosair.module.js')),errors:[]};let server,browser;
 try{
  const bundles=await buildFourFixtures(temp);for(const bundle of bundles){routes.set('/bundles/'+bundle.name+'/asset-manifest.json',await readFile(join(bundle.root,'asset-manifest.json')));for(const file of bundle.manifest.files)routes.set('/bundles/'+bundle.name+'/'+file.path,await readFile(join(bundle.root,file.path)));}
+ // Deliberately synthesize the old layout in memory; these are NOT historical package bytes.
+ const mint=bundles.find(b=>b.name==='mint'),legacy=structuredClone(mint.manifest),removed=new Set(['reports/asset-binding.json','reports/source-refs.json']);
+ legacy.files=legacy.files.filter(f=>!removed.has(f.path));
+ for(const file of legacy.files){let bytes=await readFile(join(mint.root,file.path));if(file.path==='asset-lock.json'){const lock=JSON.parse(bytes.toString());lock.toolchain.a2assetVersion='0.1.0';bytes=Buffer.from(JSON.stringify(lock));file.sha256=hash(bytes);file.bytes=bytes.length;}routes.set('/bundles/legacy01-synthetic/'+file.path,bytes);}
+ routes.set('/bundles/legacy01-synthetic/asset-manifest.json',Buffer.from(JSON.stringify(legacy)));
+ report.legacyLayout={source:'synthetic derivation of current Builder output, not historical artifact',builderVersion:'0.1.0',manifestSchemaVersion:legacy.schemaVersion,removedReceipts:[...removed]};
+ report.manifestSchemaSha256=hash(await readFile(join(root,'schemas/bundle-manifest.schema.json')));
  report.buildFingerprints=bundles.map(b=>({theme:b.name,fingerprint:b.fingerprint}));
  server=createServer((req,res)=>{const path=new URL(req.url,'http://localhost').pathname,bytes=routes.get(path);if(!bytes){res.writeHead(404);res.end();return;}res.setHeader('Content-Type',path.endsWith('.mjs')||path.endsWith('.js')?'text/javascript':path.endsWith('.json')?'application/json':path.endsWith('.png')?'image/png':path.endsWith('.wav')?'audio/wav':'text/html');res.end(bytes);});await new Promise(r=>server.listen(0,'127.0.0.1',r));
  browser=await webkit.launch({headless:true,...(process.env.WEBKIT_EXECUTABLE?{executablePath:process.env.WEBKIT_EXECUTABLE}:{})});const page=await browser.newPage({viewport:{width:600,height:700}});page.on('pageerror',e=>report.errors.push(String(e)));await page.goto('http://127.0.0.1:'+server.address().port);await page.waitForFunction(()=>['READY','FAIL'].includes(window.__four?.status),null,{timeout:30000});
