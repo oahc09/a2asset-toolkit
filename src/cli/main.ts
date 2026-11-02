@@ -2,7 +2,7 @@ import {importAssets} from '../core/import-assets.js';
 import {importBatch} from '../core/import-batch.js';
 import {resolve,dirname} from 'node:path';
 import {resolveAssets} from '../resolver/index.js';
-import {buildBundle,validatePackage,capabilities} from '../builder/index.js';
+import {buildBundle,validatePackage,capabilities,recoverPublication} from '../builder/index.js';
 import {atomicFile,within,readSafe} from '../builder/io.js';
 import {AssetRegistry,type ReviewRecord,type AssetState} from '../registry/index.js';
 import {parseArguments} from './arguments.js';
@@ -22,10 +22,14 @@ export async function run(argv:readonly string[], options:{signal?:AbortSignal}=
  try {
   if(options.signal?.aborted)return report([diagnostic('E_CANCELLED','','Operation cancelled')]);
   const a=parseArguments(argv);
-  if(a.command==='help')return {...report([]),help:'a2asset inspect <request.json> --json; import <directory|zip> --definition <json> --registry <path>; import-batch <batch.json> --registry <path> (jobs: id,path,definition; stopOnError defaults true); registry list|get|approve|publish|quarantine|deprecate ...; resolve|build|validate ...'} as Report;
+  if(a.command==='help')return {...report([]),help:'a2asset inspect <request.json> --json; import <directory|zip> --definition <json> --registry <path>; import-batch <batch.json> --registry <path> (jobs: id,path,definition; stopOnError defaults true); registry list|get|approve|publish|quarantine|deprecate ...; resolve|build|validate ...; recover <out> --registry <path> --transaction-id <id> --confirm-owner-stopped (explicit interrupted-publication recovery)'} as Report;
   if(a.command==='inspect'){
    if(a.positional.length!==1)throw Error('inspect requires exactly one request JSON');
    return validateContract('game-asset-request',await readJson(a.positional[0]));
+  }
+  if(a.command==='recover'){
+   if(a.positional.length!==1||typeof a.options.registry!=='string'||typeof a.options['transaction-id']!=='string'||a.options['confirm-owner-stopped']!==true)throw Error('recover requires one output directory, --registry, --transaction-id and explicit --confirm-owner-stopped');
+   return recoverPublication({workspace:process.cwd(),out:a.positional[0],registry:a.options.registry,transactionId:a.options['transaction-id'],confirmOwnerStopped:true});
   }
   if(a.command==='validate'){
    if(a.positional.length!==1)throw Error('validate requires one package directory');

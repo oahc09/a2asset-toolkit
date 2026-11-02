@@ -23,7 +23,7 @@ try{
  await generateFixture(temp);
  const routes=new Map([['/engine/cocosair.module.js',sdk],['/runtime/index.js',join(root,'dist/src/runtime/index.js')]]);
  for(const f of ['index.html','main.mjs'])routes.set('/'+f,join(root,'tests/runtime/browser-fixture',f));
- for(const f of ['asset-manifest.json','corrupt-manifest.json','assets/atlas.png','assets/tone.wav','assets/font.woff2','assets/map.json'])routes.set('/'+f,join(temp,f));
+ for(const f of ['asset-manifest.json','corrupt-manifest.json','assets/atlas.png','assets/tone.wav','assets/font.woff2','assets/map.json','assets/alpha.png'])routes.set('/'+f,join(temp,f));
  server=createServer(async(req,res)=>{
   const path=new URL(req.url,'http://localhost').pathname,p=routes.get(path==='/'?'/index.html':path);
   if(!p){res.writeHead(404);res.end();return;}

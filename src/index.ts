@@ -9,3 +9,5 @@ export {processMediaAsset,mediaToolchainFor} from './processors/media.js';
 export {buildBundle,validatePackage,type BuildInput,type BuildResult} from './builder/index.js';
 export {evaluateQuality,summarizeCoverage,type QualityInput,type QualityReport,type EvidenceTrust} from './quality/index.js';
 export {importBatch,MAX_BATCH_IMPORT_JOBS,type BatchImportInput,type BatchImportJob,type BatchImportReport} from './core/import-batch.js';
+
+export {recoverPublication,type RecoverPublicationInput,type RecoveryResult} from './builder/recovery.js';
