@@ -13,7 +13,16 @@ SHA is rechecked, but this synchronous decoder is not the untrusted importer.
 ## PNG / atlas / animation
 
 - PNGJS 7 full decode and CRC. Only sRGB/assumed-sRGB + straight alpha. Non-sRGB
-  gamma, embedded ICC and APNG explicitly unsupported; no implicit conversion.
+  chromaticities and transfer metadata are refused; no implicit conversion.
+  Untagged PNG remains assumed sRGB. Explicit `sRGB` is allowed with a valid
+  intent; any `gAMA` or `cHRM` must match [PNG's canonical sRGB values](https://www.w3.org/TR/png-3/#11sRGB).
+  Conflicting fallback metadata is refused even if an sRGB chunk is present.
+  All `cICP`, embedded ICC and APNG inputs need a separate certified processor.
+  This admission applies to PNG sources in the effective definition, including a
+  selected PNG variant. Cache hits recheck the registered PNG source metadata;
+  local cache receipts are integrity checks, not source admission or signatures.
+  PNG processor v1.0.1 changes the cache key; previously emitted packages must
+  be rebuilt to use the stricter source policy.
 - Asset definition and frame/source references validated. Multi-source images
   without explicit state mapping are refused rather than silently dropping images.
 - All-alpha-zero frames are E_EMPTY_FRAME, never passed as destroyed/idle artwork.

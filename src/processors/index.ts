@@ -1,7 +1,8 @@
 import { PNG } from 'pngjs';
 import { createHash } from 'node:crypto';
 import { validateContract,diagnostic,type Report } from '../contracts/validate.js';
-export const PROCESSOR_VERSION='png-atlas-1.0.0';
+import {assertPngColorAdmission,PngAdmissionError} from './png-color.js';
+export const PROCESSOR_VERSION='png-atlas-1.0.1';
 export interface ProcessorOptions { maxTextureSize?:number; maxDecodedBytes?:number; trim?:boolean; }
 export interface ProcessorResult extends Report { files:Map<string,Uint8Array>;binding?:Record<string,any>;metadata:Record<string,any>; }
 type Json=Record<string,any>;
@@ -22,7 +23,15 @@ export function processAsset(definition:Json,sourceFiles:Map<string,Uint8Array>,
   if(definition.geometry?.trimOffset?.some((n:number)=>n!==0))refuse('E_PROCESSOR_UNSUPPORTED','Pretrimmed source metadata needs an explicit source-size contract');
   const base=`assets/${definition.assetId}-${definition.version}`;validateImportPath(base+'.png');let decodedBytes=0;
   const read=(index:number,media:string):Buffer=>{const source=definition.sources[index];if(!source||source.mediaType!==media)refuse('E_PROCESSOR_UNSUPPORTED','Source format/index unsupported');validateImportPath(source.path);const bytes=sourceFiles.get(source.path);if(!bytes||sha(bytes)!==source.sha256)refuse('E_LOCK_DRIFT','Trusted source bytes missing or hash differs');if(bytes!.byteLength>16*1024*1024)refuse('E_BUILD_BUDGET','Source exceeds byte budget');return Buffer.from(bytes!);};
-  const decode=(index:number):PNG=>{const bytes=read(index,'image/png');if(bytes.length<33||bytes.toString('hex',0,8)!=='89504e470d0a1a0a')refuse('E_SECURITY_UNSAFE_CONTENT','Not PNG');const w=bytes.readUInt32BE(16),h=bytes.readUInt32BE(20);if(!w||!h||w>max||h>max||(decodedBytes+=w*h*4)>budget)refuse('E_BUILD_BUDGET','Decoded image dimensions/bytes exceed profile');let off=8;while(off+12<=bytes.length){const n=bytes.readUInt32BE(off),type=bytes.toString('ascii',off+4,off+8);if(n>bytes.length-off-12)refuse('E_SECURITY_UNSAFE_CONTENT','PNG chunk overflow');if(['iCCP','acTL','fcTL','fdAT'].includes(type))refuse('E_PROCESSOR_UNSUPPORTED','ICC/APNG requires a separate certified processor');off+=n+12;if(type==='IEND')break;}if(off!==bytes.length)refuse('E_SECURITY_UNSAFE_CONTENT','PNG trailing data');const image=PNG.sync.read(bytes,{checkCRC:true});if(image.gamma&&Math.abs(image.gamma-.45455)>.0001)refuse('E_PROCESSOR_UNSUPPORTED','Non-sRGB transfer needs explicit color conversion');if(image.width!==w||image.height!==h)refuse('E_SECURITY_UNSAFE_CONTENT','Decoded dimensions differ');return image;};
+  const pngSources=new Map<number,Buffer>();
+  for(let i=0;i<definition.sources.length;i++)if(definition.sources[i].mediaType==='image/png'){
+   const bytes=read(i,'image/png');assertPngColorAdmission(bytes);pngSources.set(i,bytes);
+  }
+  const decode=(index:number):PNG=>{
+   const bytes=pngSources.get(index)??refuse('E_PROCESSOR_UNSUPPORTED','Source format/index unsupported');
+   const w=bytes.readUInt32BE(16),h=bytes.readUInt32BE(20);if(!w||!h||w>max||h>max||(decodedBytes+=w*h*4)>budget)refuse('E_BUILD_BUDGET','Decoded image dimensions/bytes exceed profile');
+   const image=PNG.sync.read(bytes,{checkCRC:true});if(image.width!==w||image.height!==h)refuse('E_SECURITY_UNSAFE_CONTENT','Decoded dimensions differ');return image;
+  };
   const binding:Json={assetId:definition.assetId,kind:definition.kind,files:[],pivot:definition.geometry?.pivot??[.5,.5]};if(definition.geometry?.logicalSize)binding.logicalSize=definition.geometry.logicalSize;
   if(definition.kind==='tilemap2d'){
    if(definition.tilemap?.orientation!=='orthogonal')refuse('E_PROCESSOR_UNSUPPORTED','Only orthogonal tilemap');const input=read(0,'application/json');const map=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(input));
@@ -45,5 +54,5 @@ export function processAsset(definition:Json,sourceFiles:Map<string,Uint8Array>,
    result.metadata.atlas={width,height,padding:1,extrude:1,regions:images.map(i=>({sourceIndex:i.index,...region(i)}))};result.metadata.atlasDecodedBytes=width*height*4;result.metadata.estimatedPeakDecodedBytes=decodedBytes+width*height*4;
   }
   result.binding=binding;result.metadata.decodedBytes=decodedBytes;result.metadata.outputHashes=Object.fromEntries([...result.files].map(([path,bytes])=>[path,sha(bytes)]));return result;
- }catch(e){result.status='FAIL';result.files.clear();result.binding=undefined;result.diagnostics.push(diagnostic(e instanceof Refusal?e.code:'E_PROCESSOR_DECODE','',e instanceof Refusal?e.message:'Invalid source or decode failure','Correct source metadata/bytes or select a supported processor; do not bypass the profile.'));return result;}
+ }catch(e){result.status='FAIL';result.files.clear();result.binding=undefined;const refusal=e instanceof Refusal||e instanceof PngAdmissionError;result.diagnostics.push(diagnostic(refusal?e.code:'E_PROCESSOR_DECODE','',refusal?e.message:'Invalid source or decode failure','Correct source metadata/bytes or select a supported processor; do not bypass the profile.'));return result;}
 }
