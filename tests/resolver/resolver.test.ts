@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {readFileSync,mkdtempSync,rmSync} from 'node:fs';import {join} from 'node:path';import {tmpdir} from 'node:os';import {createHash} from 'node:crypto';
-import {AssetRegistry,type RegistryEntry,type ReviewRecord} from '../../src/registry/index.js';
+import {AssetRegistry,canonical,type RegistryEntry,type ReviewRecord} from '../../src/registry/index.js';
 import {resolveAssets,type ResolveInput} from '../../src/resolver/index.js';
 const read=(name:string)=>JSON.parse(readFileSync(new URL(`../../examples/${name}.json`,import.meta.url),'utf8'));
 function record(id='player.one',version='1.0.0',geometry?:any):RegistryEntry{const root=mkdtempSync(join(tmpdir(),'a2asset-resolver-'));try{const r=new AssetRegistry(root),d=read('asset-definition-UNPUBLISHABLE');d.assetId=id;d.version=version;if(geometry!==undefined)d.geometry=geometry;d.approvalStatus='imported';d.capabilities.states=['idle'];d.stateFrames={idle:{loop:true,frames:[{sourceIndex:0,durationMs:100}]}};d.sources=[{path:'sprite.png',mediaType:'image/png',sha256:createHash('sha256').update(readFileSync('examples/m0-runtime/assets/player.png')).digest('hex')}];d.provenance.licenseEvidencePath='license.txt';r.importDefinition(d,new Map([['sprite.png',readFileSync('examples/m0-runtime/assets/player.png')],['license.txt',Buffer.from('SYNTHETIC TEST APPROVAL, NOT ARTWORK')]]));const key=id+'@'+version;r.transition(key,'inspected');const e=r.get(key).record!;const review:ReviewRecord={assetKey:key,definitionDigest:e.definitionDigest,evidenceSha256:e.files['license.txt']!,decision:'approve',redistributionApproved:true,sourceUrl:'https://example.invalid/test',reviewer:'SYNTHETIC TEST REVIEW',reviewedAt:'2026-01-01T00:00:00Z',author:'TEST AUTHOR',licenseExpression:'MIT'};r.transition(key,'approved',review);r.transition(key,'published',review);return r.get(key).record!;}finally{rmSync(root,{recursive:true,force:true})}}
@@ -22,3 +22,13 @@ test('inherited theme siblings remain same-priority and unrelated graph cycle is
 
 test('explicit density one resolves actual 32px PNG with 32 logical units on both axes',()=>{const i=input([record('density.one','1.0.0',{pixelSize:[32,32],logicalSize:[32,32]})]);i.visual.rules.pixelDensity=1;assert.equal(resolveAssets(i).status,'PASS');});
 test('pixel density rejects mismatched axes and missing geometry instead of guessing',()=>{for(const geometry of [{pixelSize:[32,32],logicalSize:[32,16]},{pixelSize:[32,32]},{}]){const i=input([record('density.bad','1.0.0',geometry)]);i.visual.rules.pixelDensity=1;const result=resolveAssets(i);assert.equal(result.status,'FAIL');assert.ok(result.rejectedCandidates.some(c=>c.reason.includes('Pixel density')));}});
+
+test('artifact-facing registry and slot diagnostics use code-unit order, not locale collation',()=>{
+ const assets=[record('player_a'),record('player.a'),record('player-a')];
+ const i=input(assets),slot=i.request.slots['player.main'];
+ i.request.slots={'player_a':slot,'player.a':slot,'player-a':slot};
+ const result=resolveAssets(i);
+ const order=[2,1,0].map(n=>[assets[n].definition.assetId+'@1.0.0',assets[n]]);
+ assert.equal(result.registryDigest,createHash('sha256').update(canonical(order)).digest('hex'));
+ assert.deepEqual(result.ambiguous.map(row=>row.slot),['player-a','player.a','player_a']);
+});

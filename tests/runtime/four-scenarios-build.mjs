@@ -6,7 +6,7 @@ import {join} from 'node:path';
 import {createHash} from 'node:crypto';
 import {PNG} from 'pngjs';
 import {importAssets} from '../../dist/src/core/import-assets.js';
-import {AssetRegistry} from '../../dist/src/registry/index.js';
+import {AssetRegistry,canonical} from '../../dist/src/registry/index.js';
 import {buildBundle,validatePackage} from '../../dist/src/builder/index.js';
 const sha=b=>createHash('sha256').update(b).digest('hex');
 const checked=r=>{assert.equal(r.status,'PASS',JSON.stringify(r.diagnostics));return r;};
@@ -39,6 +39,17 @@ export async function buildFourFixtures(root){
   const input={workspace:root,out:'bundles/'+name,registry,resolve:{request:{schemaVersion:'1.0.0',gameId:'synthetic.four-scenarios',genre:'arcade_shooter',slots},visual,theme,profile}};
   const first=checked(await buildBundle(input)),bytes=await readFile(join(root,input.out,'asset-manifest.json'));checked(await validatePackage(join(root,input.out),profile));
   const repeat=checked(await buildBundle(input));assert.equal(first.buildFingerprint,repeat.buildFingerprint);assert.deepEqual(await readFile(join(root,input.out,'asset-manifest.json')),bytes);assert.ok(repeat.nodes.some(n=>n.cache==='hit'));
+  // Map output inserts PNG before JSON on a miss; cache hydration provides path order.
+  const mapNode=r=>r.nodes.find(n=>n.id==='process:test.map@1.0.0');
+  assert.equal(mapNode(first).cache,name==='mint'?'miss':'hit');
+  assert.equal(mapNode(repeat).cache,'hit');
+  const mapPaths=[...first.manifest.bindings['map.main'].files].sort();
+  assert.equal(mapPaths.length,2);
+  const hashes=await Promise.all(mapPaths.map(async path=>[path,sha(await readFile(join(root,input.out,path)))]));
+  assert.equal(mapNode(first).outputDigest,sha(canonical(hashes)));
+  const digests=r=>r.nodes.map(({id,inputDigest,outputDigest})=>({id,inputDigest,outputDigest}));
+  assert.deepEqual(digests(first),digests(repeat));
+  assert.deepEqual(first.manifest.files.map(f=>f.path),first.manifest.files.map(f=>f.path).sort());
   outputs.push({name,root:join(root,input.out),manifest:first.manifest,fingerprint:first.buildFingerprint});
  }
  return outputs;

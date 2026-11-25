@@ -1,3 +1,4 @@
+import {compareText} from '../core/order.js';
 import {createHash} from 'node:crypto';
 import {canonical,type RegistryEntry} from '../registry/index.js';
 import {diagnostic,validateContract,type Diagnostic,type Report,type ContractName} from '../contracts/validate.js';
@@ -16,7 +17,7 @@ const escape=(s:string)=>s.replace(/~/g,'~0').replace(/\//g,'~1');
 function resolveAssetsInternal(input:ResolveInput):ResolveResult {
  const diagnostics:Diagnostic[]=[],bound:ResolveResult['bindings']=Object.create(null),pinned:Json=Object.create(null),missingRequired:string[]=[],missingOptional:string[]=[],ambiguous:ResolveResult['ambiguous']=[],rejectedCandidates:RejectedCandidate[]=[];
  const fail=(code:string,path:string,message:string)=>diagnostics.push(diagnostic(code,path,message,'Correct the explicit inputs or supply a reviewed, compatible asset; no silent fallback is permitted.'));
- const result=():ResolveResult=>{diagnostics.sort((a,b)=>a.path.localeCompare(b.path)||a.code.localeCompare(b.code)||a.message.localeCompare(b.message));return {schemaVersion:'1.0.0',status:diagnostics.some(d=>d.severity==='error')?'FAIL':'PASS',success:!diagnostics.some(d=>d.severity==='error'),diagnostics,artifactPaths:[],bindings:bound,assetBinding:{schemaVersion:'1.0.0',gameId:input.request?.gameId??'invalid',bindings:pinned},missingRequired,missingOptional,ambiguous,rejectedCandidates:rejectedCandidates.sort((a,b)=>a.slot.localeCompare(b.slot)||a.assetKey.localeCompare(b.assetKey)||a.code.localeCompare(b.code)),registryDigest};};
+ const result=():ResolveResult=>{diagnostics.sort((a,b)=>compareText(a.path,b.path)||compareText(a.code,b.code)||compareText(a.message,b.message));return {schemaVersion:'1.0.0',status:diagnostics.some(d=>d.severity==='error')?'FAIL':'PASS',success:!diagnostics.some(d=>d.severity==='error'),diagnostics,artifactPaths:[],bindings:bound,assetBinding:{schemaVersion:'1.0.0',gameId:input.request?.gameId??'invalid',bindings:pinned},missingRequired,missingOptional,ambiguous,rejectedCandidates:rejectedCandidates.sort((a,b)=>compareText(a.slot,b.slot)||compareText(a.assetKey,b.assetKey)||compareText(a.code,b.code)),registryDigest};};
  let registryDigest='';
  for(const [name,value]of [['game-asset-request',input.request],['visual-spec',input.visual],['build-profile',input.profile],...(input.theme?[['theme-pack',input.theme]]:[]),...(input.genre?[['genre-kit',input.genre]]:[]),...(input.bindings?[['asset-binding',input.bindings]]:[])] as [ContractName,unknown][]){const r=validateContract(name,value);diagnostics.push(...r.diagnostics.map(d=>({...d,path:`/${name}${d.path}`})));}
  for(const theme of input.themes??[])diagnostics.push(...validateContract('theme-pack',theme).diagnostics);
@@ -33,7 +34,7 @@ function resolveAssetsInternal(input:ResolveInput):ResolveResult {
   const expected=structuredClone(entry.definition);expected.approvalStatus=entry.state;if(entry.currentReview){for(const field of ['reviewer','reviewedAt','sourceUrl','author','licenseExpression','redistributionApproved'])expected.provenance[field]=(entry.currentReview as any)[field];if(canonical(expected)!==canonical(d)){fail('E_LOCK_DRIFT','/registry/'+escape(key),'Effective definition differs from immutable metadata plus approval');continue;}}
   if(entries.has(key)&&canonical(entries.get(key))!==canonical(entry)){fail('E_VERSION_CONFLICT','/registry/'+escape(key),'Same assetId@version has conflicting content or approval snapshot');continue;}entries.set(key,entry);
  }
- const ordered=[...entries.entries()].sort(([a],[b])=>a.localeCompare(b));registryDigest=digest(ordered);
+ const ordered=[...entries.entries()].sort(([a],[b])=>compareText(a,b));registryDigest=digest(ordered);
  const byId=(id:string)=>ordered.filter(([,e])=>e.definition.assetId===id).map(([k])=>k);
  const themeMap=new Map<string,Json>();for(const theme of [...(input.themes??[]),...(input.theme?[input.theme]:[])]){const existing=themeMap.get(theme.themeId);if(existing&&canonical(existing)!==canonical(theme))fail('E_VERSION_CONFLICT','/themes','Theme ID has multiple unlocked versions/content');themeMap.set(theme.themeId,theme);}
  const themeOrder:Json[]=[],visiting=new Set<string>(),visited=new Set<string>();
@@ -65,7 +66,7 @@ function resolveAssetsInternal(input:ResolveInput):ResolveResult {
   if(pin?.variantId){const variant=d.variants?.find((v:Json)=>v.variantId===pin.variantId);if(!variant||own(entry.files,variant.path)!==variant.sha256)return {code:'E_LOCK_DRIFT',reason:'Pinned variant missing or changed'};const format=extension(variant.path);if(![input.profile.profileId,input.profile.target.platform].includes(variant.target)||!input.profile.allowFormats.includes(format)||variant.mediaType&&media[format]!==variant.mediaType||!input.processorCapabilities.some(c=>c.kind===d.kind&&c.formats.includes(format)))return {code:'E_PROCESSOR_UNSUPPORTED',reason:'Pinned variant target/format cannot be processed for profile'};}
   return undefined;
  };
- for(const [slotName,slot] of Object.entries(input.request.slots).sort(([a],[b])=>a.localeCompare(b)) as [string,Json][]){
+ for(const [slotName,slot] of Object.entries(input.request.slots).sort(([a],[b])=>compareText(a,b)) as [string,Json][]){
   const pin=own(input.bindings?.bindings,slotName);let candidates:string[]=[],source:ResolvedAsset['bindingSource']='registry',explicit=false;const tiers:{keys:string[];source:ResolvedAsset['bindingSource']}[]=[];
   if(pin){candidates=[pin.assetId+'@'+pin.version];source='explicit';explicit=true;}
   else if(slot.preferredAssetId){candidates=byId(slot.preferredAssetId);source='explicit';explicit=true;}
