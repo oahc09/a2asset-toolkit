@@ -1,0 +1,148 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> a2asset-toolkit@0.0.1 test
+> npm run build && node --import tsx --test tests/**/*.test.ts && npm run test:runtime
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> a2asset-toolkit@0.0.1 build
+> node scripts/build.mjs
+
+✔ sokoban: frozen mapping, output schema, deterministic and input immutable (43.216981ms)
+✔ match3: frozen mapping, output schema, deterministic and input immutable (5.933971ms)
+✔ merge2048: frozen mapping, output schema, deterministic and input immutable (2.258271ms)
+✔ block_puzzle: frozen mapping, output schema, deterministic and input immutable (1.916589ms)
+✔ falling_blocks: frozen mapping, output schema, deterministic and input immutable (8.40727ms)
+✔ arcade_shooter: frozen mapping, output schema, deterministic and input immutable (7.524502ms)
+✔ unknown archetypes and custom capabilities fail explicitly (2.734717ms)
+✔ invalid identifiers, version, archetype mismatch and absent validation fail (10.033149ms)
+✔ validator cannot mutate original source, outputs have no shared mutable mapping (2.759007ms)
+✔ content-dependent refill colors, blockers and enemy bullets (6.001207ms)
+✔ pinned upstream validator accepts all six immutable fixtures and rejects gameplay damage (164.694253ms)
+✔ reject unknown/duplicate/missing options, no silent option override (4.648878ms)
+✔ inspect returns machine readable failure on missing or malformed input (13.045296ms)
+✔ exit taxonomy distinguishes security, build and infra (3.19565ms)
+✔ pre-cancelled CLI SDK returns cancellation JSON contract (0.305276ms)
+✔ compiled SIGINT produces JSON exit 130 after importer worker cleanup (868.948214ms)
+✔ compiled CLI imports actual PNG, lists inspected asset, refuses approval without human record (2931.752553ms)
+✔ synthetic-only integration: import→explicit review→publish→deprecate (2461.455946ms)
+✔ compiled inspect CLI emits exactly one JSON, exit 0, no interactive prompt (519.907352ms)
+✔ compiled CLI unknown options and missing files fail with exit 2 JSON (1031.590761ms)
+✔ compiled CLI unsupported commands are explicit environment/capability exit 5 (382.927149ms)
+✔ BG04 independent fixture has bounded tile indices and explicit frame requirements (3.492034ms)
+✔ review: empty declared states must not accept nonempty stateFrames (21.661372ms)
+✔ review: self-inheriting theme must be rejected or explicitly blocked (1.329464ms)
+✔ review: unverified production empty manifest cannot be certified (5.802536ms)
+✔ review: asset-binding with no registry/request context cannot receive complete semantic PASS (1.018619ms)
+✔ game-asset-request: supplied structural positive (not production approval) (5.767035ms)
+✔ game-asset-request: missing schemaVersion rejected (1.215158ms)
+✔ game-asset-request: unknown property rejected (0.325412ms)
+✔ visual-spec: supplied structural positive (not production approval) (2.068885ms)
+✔ visual-spec: missing schemaVersion rejected (0.72809ms)
+✔ visual-spec: unknown property rejected (0.530952ms)
+✔ asset-definition: supplied structural positive (not production approval) (17.931621ms)
+✔ asset-definition: missing schemaVersion rejected (2.806406ms)
+✔ asset-definition: unknown property rejected (0.504942ms)
+✔ asset-binding: supplied structural positive (not production approval) (1.117827ms)
+✔ asset-binding: missing schemaVersion rejected (0.392462ms)
+✔ asset-binding: unknown property rejected (0.364524ms)
+✔ theme-pack: supplied structural positive (not production approval) (1.267819ms)
+✔ theme-pack: missing schemaVersion rejected (0.223965ms)
+✔ theme-pack: unknown property rejected (0.16999ms)
+✔ genre-kit: supplied structural positive (not production approval) (1.209295ms)
+✔ genre-kit: missing schemaVersion rejected (0.380418ms)
+✔ genre-kit: unknown property rejected (0.280316ms)
+✔ build-profile: supplied structural positive (not production approval) (2.05611ms)
+✔ build-profile: missing schemaVersion rejected (0.180324ms)
+✔ build-profile: unknown property rejected (0.122347ms)
+✔ bundle-manifest: supplied structural positive (not production approval) (3.263351ms)
+✔ bundle-manifest: missing schemaVersion rejected (2.649431ms)
+✔ bundle-manifest: unknown property rejected (0.226833ms)
+✔ asset-lock: supplied structural positive (not production approval) (1.538699ms)
+✔ asset-lock: missing schemaVersion rejected (0.198921ms)
+✔ asset-lock: unknown property rejected (0.149042ms)
+✔ schema-only negative asset cannot be production published (13.208651ms)
+✔ actual-byte safety: hash (3.531683ms)
+✔ actual-byte safety: source-index (1.940235ms)
+✔ actual-byte safety: missing-state (0.856825ms)
+✔ actual-byte safety: no-rights (1.355374ms)
+✔ actual-byte safety: symlink (1.763165ms)
+✔ actual-byte safety: case-collision (1.873842ms)
+✔ PNG full decode and unchanged original (208.315512ms)
+✔ directory imports PNG JSON TXT and produces Map (202.24295ms)
+✔ malformed PNG, CRC, dimensions, extension and active content refused (172.997104ms)
+✔ filesystem symlink, case collision, byte and count limits refused (25.00856ms)
+✔ portable path rules reject traversal and absolute names (0.959121ms)
+✔ valid ZIP decoded and corrupt/duplicate/unsafe archives refused (248.620087ms)
+✔ ZIP bomb ratio and total budgets fail before publication (26.015399ms)
+✔ cancellation and decoder deadline reject and leave no private scratch (29.796643ms)
+✔ ZIP entry CRC and actual decompressed byte limits are checked (9.292885ms)
+✔ abort during decode waits for child shutdown and scratch cleanup (29.647233ms)
+✔ ZIP implicit directory collisions are refused in either order (37.705238ms)
+✔ ZIP timeout/cancellation return no partial assets and stop active decoder (40.069274ms)
+✔ unsupported media and invalid UTF-8 are explicit refusals (21.151969ms)
+✔ deduplicated content, immutable metadata, readable digest and query (53.84894ms)
+✔ no automatic approval and legal state progression with exact-bound test review (36.502929ms)
+✔ failed import stays absent: missing-evidence (1.467044ms)
+✔ failed import stays absent: hash (1.281646ms)
+✔ failed import stays absent: case (2.110489ms)
+✔ failed import stays absent: unreferenced (1.237435ms)
+✔ failed import stays absent: published-import (1.284011ms)
+✔ failed import stays absent: traversal (1.226351ms)
+✔ rights refusal: no-rights (5.575588ms)
+✔ rights refusal: wrong-definition (5.796071ms)
+✔ rights refusal: wrong-evidence (6.117335ms)
+✔ rights refusal: missing-reviewer (7.172242ms)
+✔ rights refusal: future (12.632898ms)
+✔ rights refusal: calendar (8.290385ms)
+✔ rights refusal: unknown-license (12.215938ms)
+✔ rights refusal: custom-no-conclusion (9.884573ms)
+✔ custom license needs explicit bound rights conclusion (8.879837ms)
+✔ tampered blob rejected on get/list, no silent stale metadata (7.846532ms)
+✔ symlinked directories and exclusive writer lock rejected (1.656029ms)
+✔ history tamper or missing sequence rejected (12.027597ms)
+✔ failed hash update leaves previous good version visible and intact (8.446599ms)
+✔ revoked approvals cannot be replayed and effective rights cleared until new review (59.392229ms)
+✔ deterministic distribution notices require published assets and omit private audit fields (17.373619ms)
+✔ independent review: decoded media type must match declared source (203.999498ms)
+✔ independent review: decoded source dimensions must match declared dimensions (141.167214ms)
+✔ independent review: repeated same import preserves inspected state without illegal transition (325.4486ms)
+✔ independent review: actual registry/environment I/O codes use exit 5 (0.747779ms)
+✔ independent: invalid frame source must not become inspected/published (21.628908ms)
+✔ independent: undeclared state capability must not become inspected (3.048487ms)
+✔ independent: hardlinked blob fails get and list (4.384911ms)
+✔ independent: rehashed forbidden genesis state cannot manufacture publication (2.848591ms)
+✔ independent: valid hashes do not excuse changed publication review (10.894882ms)
+✔ independent: history replay must recheck fresh approval after revocation (21.917146ms)
+✔ independent: FIFO registry records are rejected without blocking (678.061051ms)
+ℹ tests 107
+ℹ suites 0
+ℹ pass 107
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3692.531636
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> a2asset-toolkit@0.0.1 test:runtime
+> node --test tests/runtime/*.test.mjs
+
+✔ M0 real PNG matches manifest (14.41385ms)
+✔ M0 refuses missing slot (0.605425ms)
+✔ M0 refuses path escape (0.329363ms)
+✔ M0 refuses undeclared or duplicate files (0.368924ms)
+✔ M0 refuses altered bytes (5.278446ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 157.322048
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1
+npm notice To update run: npm install -g npm@12.2.1
+npm notice

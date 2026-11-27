@@ -1,0 +1,72 @@
+{
+  "schemaVersion": "1.0.0",
+  "assetId": "ships.blue-falcon",
+  "version": "1.0.0",
+  "kind": "sprite2d",
+  "roles": [
+    "actor.player"
+  ],
+  "styleTags": [
+    "neon",
+    "top-down"
+  ],
+  "capabilities": {
+    "states": [
+      "idle",
+      "hit",
+      "destroyed"
+    ],
+    "direction": "up"
+  },
+  "geometry": {
+    "pixelSize": [
+      128,
+      128
+    ],
+    "logicalSize": [
+      48,
+      48
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  "sources": [
+    {
+      "path": "sources/ships/blue-falcon.png",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "mediaType": "image/png"
+    }
+  ],
+  "approvalStatus": "quarantined",
+  "stateFrames": {
+    "idle": {
+      "loop": true,
+      "frames": [
+        {
+          "sourceIndex": 0,
+          "durationMs": 100
+        }
+      ]
+    },
+    "hit": {
+      "loop": false,
+      "frames": [
+        {
+          "sourceIndex": 0,
+          "durationMs": 100
+        }
+      ]
+    },
+    "destroyed": {
+      "loop": false,
+      "frames": [
+        {
+          "sourceIndex": 0,
+          "durationMs": 100
+        }
+      ]
+    }
+  }
+}

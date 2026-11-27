@@ -1,0 +1,134 @@
+{
+  "schema_version": "0.1",
+  "metadata": {
+    "id": "merge2048-reference",
+    "version": "0.1.0"
+  },
+  "design": {
+    "archetype": "merge2048",
+    "audience": {
+      "type": "casual"
+    },
+    "session": {
+      "target_minutes": {
+        "min": 2,
+        "max": 5
+      }
+    },
+    "pillars": [
+      "readable_rules",
+      "meaningful_decisions"
+    ],
+    "complexity": {
+      "action_budget": "low",
+      "mechanic_budget": "medium"
+    },
+    "content_target": {
+      "type": "challenge",
+      "expected_count": 1
+    }
+  },
+  "game": {
+    "archetype": "merge2048"
+  },
+  "runtime": {
+    "simulation_mode": "TURN_BASED",
+    "tick_rate": 60
+  },
+  "action_space": {
+    "type": "discrete",
+    "values": [
+      "LEFT",
+      "RIGHT",
+      "UP",
+      "DOWN"
+    ]
+  },
+  "observation": {
+    "mode": "VISIBLE_STATE",
+    "delay_ms": 0,
+    "noise": null
+  },
+  "rng": {
+    "enabled": true
+  },
+  "content": {
+    "id": "merge2048-challenge-001",
+    "type": "challenge",
+    "archetype": "merge2048",
+    "parameters": {},
+    "objectives": [],
+    "dependencies": [],
+    "extensions": {
+      "merge2048": {
+        "size": 4,
+        "target": 2048,
+        "initialTiles": 2,
+        "spawnDistribution": [
+          {
+            "value": 2,
+            "weight": 0.9
+          },
+          {
+            "value": 4,
+            "weight": 0.1
+          }
+        ],
+        "moveLimit": 1000,
+        "stopAtTarget": true
+      }
+    }
+  },
+  "evaluation": {
+    "player_profiles": [
+      {
+        "id": "random",
+        "version": "1.0.0"
+      },
+      {
+        "id": "greedy",
+        "version": "1.0.0"
+      },
+      {
+        "id": "heuristic",
+        "version": "1.0.0"
+      },
+      {
+        "id": "expectimax",
+        "version": "1.0.0"
+      }
+    ],
+    "metrics": [
+      "score",
+      "max_tile",
+      "target_rate",
+      "survival_moves",
+      "empty_cells",
+      "merge_efficiency"
+    ],
+    "gates": [
+      "schema",
+      "runtime",
+      "replay"
+    ],
+    "seed_set": {
+      "mode": "fixed",
+      "values": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    }
+  },
+  "provenance": {
+    "rules_version": "merge2048_v0.1",
+    "assumptions": []
+  },
+  "adapter": {
+    "id": "web",
+    "version": "0.1"
+  },
+  "extensions": {}
+}

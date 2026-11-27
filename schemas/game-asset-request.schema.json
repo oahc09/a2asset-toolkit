@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.a2asset.local/v1/game-asset-request.schema.json",
+  "title": "game-asset-request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "gameId",
+    "genre",
+    "slots"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "gameId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+      "maxLength": 128
+    },
+    "genre": {
+      "type": "string",
+      "minLength": 1
+    },
+    "slots": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9._-]*$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "kind",
+          "role",
+          "required",
+          "fallbackPolicy"
+        ],
+        "properties": {
+          "kind": {
+            "enum": [
+              "sprite2d",
+              "background2d",
+              "animation2d",
+              "atlas2d",
+              "tilemap2d",
+              "ui9slice",
+              "vfx2d",
+              "audio",
+              "font"
+            ]
+          },
+          "role": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+            "maxLength": 128
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "requiredStates": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9._-]*$"
+            }
+          },
+          "direction": {
+            "enum": [
+              "none",
+              "left",
+              "right",
+              "up",
+              "down",
+              "eight-way"
+            ]
+          },
+          "preferredAssetId": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+            "maxLength": 128
+          },
+          "logicalSize": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "fallbackPolicy": {
+            "enum": [
+              "none",
+              "procedural-preview"
+            ]
+          },
+          "tags": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    }
+  }
+}

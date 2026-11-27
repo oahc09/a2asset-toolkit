@@ -1,0 +1,6 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {mkdtempSync,existsSync,rmSync,mkdirSync,symlinkSync} from 'node:fs';import {tmpdir} from 'node:os';import {join} from 'node:path';
+import {validatePackage} from '../../src/builder/index.js';import {run} from '../../src/cli/main.js';
+async function scope(fn:(root:string)=>Promise<void>){const root=mkdtempSync(join(tmpdir(),'a2asset-readonly-'));try{await fn(root);}finally{rmSync(root,{recursive:true,force:true});}}
+test('SDK validation of missing nested package never creates directories',()=>scope(async root=>{const absent=join(root,'missing','package');assert.equal((await validatePackage(absent)).status,'FAIL');assert.equal(existsSync(join(root,'missing')),false);}));
+test('CLI validation remains read-only for absent paths and symlink roots',()=>scope(async root=>{const missing=join(root,'missing');assert.equal((await run(['validate',missing])).status,'FAIL');assert.equal(existsSync(missing),false);const source=join(root,'source');mkdirSync(source);const link=join(root,'alias');symlinkSync(source,link);assert.equal((await run(['validate',link])).status,'FAIL');assert.equal(existsSync(join(source,'asset-manifest.json')),false);}));

@@ -1,0 +1,20 @@
+✔ complete synthetic fixture satisfies objective evaluator but never authorizes production (13.736387ms)
+✔ structure and schema examples never replace actual trusted evidence (3.062191ms)
+✔ missing current picture, benchmark, human review and frozen baseline are BLOCKED (10.32331ms)
+✔ wrong screenshot hash, corrupted PNG, rejected and stale-bound reviews fail (10.975807ms)
+✔ measured threshold violations, nonfinite values, bad logs and gate errors fail (12.56168ms)
+✔ theme switch cannot change gameplay; missing scenario cannot count PASS (2.039229ms)
+✔ trusted host failure, refusal and exception are never green (2.233827ms)
+✔ six real fixture requests produce honest coverage and deterministic reuse statistics (1.753019ms)
+✔ review regression: explicit failed runtime and visual checks are FAIL, not unavailable (2.382516ms)
+✔ review regression: no runs cannot make structural and asset gates green (1.146885ms)
+✔ review regression: coverage refuses malformed pins, wrong kind and ghost slots (1.062904ms)
+✔ resolved binding schema projection and exact kind permit counting, not approval (0.764107ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 732.926707

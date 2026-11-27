@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "1.0.0",
+  "themeId": "sci-fi-neon",
+  "version": "1.0.0",
+  "visualSpecPath": "examples/visual-spec.json",
+  "assetIds": [],
+  "roleBindings": {},
+  "approvalStatus": "draft"
+}

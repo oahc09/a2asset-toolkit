@@ -1,0 +1,58 @@
+{
+  "name": "a2asset-toolkit",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "npm run build && node --import tsx --test tests/**/*.test.ts && node --test tests/runtime/*.test.mjs",
+    "test:contracts": "node --import tsx --test tests/contracts/*.test.ts",
+    "test:bridge": "node --import tsx --test tests/bridge/*.test.ts",
+    "test:runtime": "npm run build && node --test tests/runtime/*.test.mjs",
+    "build": "node scripts/build.mjs",
+    "test:cli": "npm run build && node --import tsx --test tests/cli/*.test.ts",
+    "verify:package": "node scripts/verify-package.mjs",
+    "test:browser": "npm run build && node tests/runtime/runtime-browser.mjs",
+    "test:scenarios": "npm run build && node tests/runtime/four-scenarios-browser.mjs"
+  },
+  "dependencies": {
+    "ajv": "8.18.0",
+    "ajv-formats": "3.0.1",
+    "fontkit": "2.0.4",
+    "pngjs": "7.0.0",
+    "sharp": "0.35.5",
+    "yauzl": "3.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "24.10.0",
+    "@types/pngjs": "6.0.5",
+    "@types/yauzl": "2.10.3",
+    "tsx": "4.20.6",
+    "typescript": "5.9.3"
+  },
+  "bin": {
+    "a2asset": "scripts/a2asset.mjs"
+  },
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    },
+    "./runtime": {
+      "types": "./dist/src/runtime/index.d.ts",
+      "import": "./dist/src/runtime/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "scripts/a2asset.mjs",
+    "LICENSE",
+    "README.md"
+  ]
+}

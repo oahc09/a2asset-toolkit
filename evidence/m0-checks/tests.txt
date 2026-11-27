@@ -1,0 +1,86 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> a2asset-toolkit@0.0.1 test
+> node --import tsx --test tests/**/*.test.ts && npm run test:runtime
+
+✔ sokoban: frozen mapping, output schema, deterministic and input immutable (43.426911ms)
+✔ match3: frozen mapping, output schema, deterministic and input immutable (3.6898ms)
+✔ merge2048: frozen mapping, output schema, deterministic and input immutable (3.091042ms)
+✔ block_puzzle: frozen mapping, output schema, deterministic and input immutable (4.198436ms)
+✔ falling_blocks: frozen mapping, output schema, deterministic and input immutable (3.271115ms)
+✔ arcade_shooter: frozen mapping, output schema, deterministic and input immutable (4.426579ms)
+✔ unknown archetypes and custom capabilities fail explicitly (6.840984ms)
+✔ invalid identifiers, version, archetype mismatch and absent validation fail (5.220581ms)
+✔ validator cannot mutate original source, outputs have no shared mutable mapping (3.585423ms)
+✔ content-dependent refill colors, blockers and enemy bullets (5.187394ms)
+✔ pinned upstream validator accepts all six immutable fixtures and rejects gameplay damage (217.07988ms)
+✔ BG04 independent fixture has bounded tile indices and explicit frame requirements (6.837003ms)
+✔ review: empty declared states must not accept nonempty stateFrames (20.208645ms)
+✔ review: self-inheriting theme must be rejected or explicitly blocked (1.196174ms)
+✔ review: unverified production empty manifest cannot be certified (5.680587ms)
+✔ review: asset-binding with no registry/request context cannot receive complete semantic PASS (1.076511ms)
+✔ game-asset-request: supplied structural positive (not production approval) (14.119941ms)
+✔ game-asset-request: missing schemaVersion rejected (1.353305ms)
+✔ game-asset-request: unknown property rejected (0.794969ms)
+✔ visual-spec: supplied structural positive (not production approval) (3.217121ms)
+✔ visual-spec: missing schemaVersion rejected (1.475981ms)
+✔ visual-spec: unknown property rejected (0.609478ms)
+✔ asset-definition: supplied structural positive (not production approval) (19.911089ms)
+✔ asset-definition: missing schemaVersion rejected (2.205586ms)
+✔ asset-definition: unknown property rejected (0.348897ms)
+✔ asset-binding: supplied structural positive (not production approval) (2.66875ms)
+✔ asset-binding: missing schemaVersion rejected (0.433884ms)
+✔ asset-binding: unknown property rejected (0.221826ms)
+✔ theme-pack: supplied structural positive (not production approval) (1.585425ms)
+✔ theme-pack: missing schemaVersion rejected (0.79316ms)
+✔ theme-pack: unknown property rejected (0.112081ms)
+✔ genre-kit: supplied structural positive (not production approval) (1.198596ms)
+✔ genre-kit: missing schemaVersion rejected (2.079528ms)
+✔ genre-kit: unknown property rejected (3.75754ms)
+✔ build-profile: supplied structural positive (not production approval) (2.340025ms)
+✔ build-profile: missing schemaVersion rejected (0.292225ms)
+✔ build-profile: unknown property rejected (0.169526ms)
+✔ bundle-manifest: supplied structural positive (not production approval) (4.296805ms)
+✔ bundle-manifest: missing schemaVersion rejected (0.214241ms)
+✔ bundle-manifest: unknown property rejected (0.151877ms)
+✔ asset-lock: supplied structural positive (not production approval) (0.743752ms)
+✔ asset-lock: missing schemaVersion rejected (0.147851ms)
+✔ asset-lock: unknown property rejected (0.114429ms)
+✔ schema-only negative asset cannot be production published (19.680781ms)
+✔ actual-byte safety: hash (33.297787ms)
+✔ actual-byte safety: source-index (8.987394ms)
+✔ actual-byte safety: missing-state (3.032223ms)
+✔ actual-byte safety: no-rights (2.091286ms)
+✔ actual-byte safety: symlink (1.333022ms)
+✔ actual-byte safety: case-collision (1.680883ms)
+ℹ tests 50
+ℹ suites 0
+ℹ pass 50
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2565.069957
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> a2asset-toolkit@0.0.1 test:runtime
+> node --test tests/runtime/*.test.mjs
+
+✔ M0 real PNG matches manifest (12.742788ms)
+✔ M0 refuses missing slot (2.320641ms)
+✔ M0 refuses path escape (0.497447ms)
+✔ M0 refuses undeclared or duplicate files (0.249977ms)
+✔ M0 refuses altered bytes (2.750782ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 325.615922
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1
+npm notice To update run: npm install -g npm@12.2.1
+npm notice

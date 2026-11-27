@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "1.0.0",
+  "gameId": "match3-reference",
+  "genre": "match3",
+  "slots": {
+    "board.floor": {
+      "kind": "sprite2d",
+      "role": "tile.floor",
+      "required": true,
+      "requiredStates": [
+        "idle"
+      ],
+      "fallbackPolicy": "none"
+    },
+    "gem.color-0": {
+      "kind": "sprite2d",
+      "role": "item.gem",
+      "required": true,
+      "requiredStates": [
+        "idle"
+      ],
+      "fallbackPolicy": "none"
+    },
+    "gem.color-1": {
+      "kind": "sprite2d",
+      "role": "item.gem",
+      "required": true,
+      "requiredStates": [
+        "idle"
+      ],
+      "fallbackPolicy": "none"
+    },
+    "gem.color-2": {
+      "kind": "sprite2d",
+      "role": "item.gem",
+      "required": true,
+      "requiredStates": [
+        "idle"
+      ],
+      "fallbackPolicy": "none"
+    },
+    "gem.color-3": {
+      "kind": "sprite2d",
+      "role": "item.gem",
+      "required": true,
+      "requiredStates": [
+        "idle"
+      ],
+      "fallbackPolicy": "none"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "1.0.0",
+  "profileId": "web-cocosair-preview",
+  "target": {
+    "platform": "web",
+    "engine": "cocosairjs",
+    "renderer": "webgl2",
+    "runtimeVersion": "unverified"
+  },
+  "mode": "preview",
+  "limits": {
+    "maxTextureSize": 2048,
+    "maxBundleBytes": 16777216,
+    "maxAtlasCount": 8,
+    "maxSingleFileBytes": 8388608
+  },
+  "allowFormats": [
+    "png",
+    "webp",
+    "json",
+    "wav",
+    "ogg",
+    "woff2"
+  ],
+  "colorSpace": "srgb",
+  "alphaMode": "straight"
+}

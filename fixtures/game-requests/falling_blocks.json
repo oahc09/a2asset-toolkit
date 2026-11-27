@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "1.0.0",
+  "gameId": "falling_blocks-reference",
+  "genre": "falling_blocks",
+  "slots": {
+    "board.floor": {
+      "kind": "sprite2d",
+      "role": "tile.floor",
+      "required": true,
+      "requiredStates": [
+        "idle"
+      ],
+      "fallbackPolicy": "none"
+    },
+    "block.cell": {
+      "kind": "sprite2d",
+      "role": "tile.block",
+      "required": true,
+      "requiredStates": [
+        "idle"
+      ],
+      "fallbackPolicy": "none"
+    }
+  }
+}

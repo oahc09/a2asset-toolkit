@@ -1,0 +1,266 @@
+{
+  "schema_version": "0.1",
+  "metadata": {
+    "id": "block_puzzle-reference",
+    "version": "0.1.0"
+  },
+  "design": {
+    "archetype": "block_puzzle",
+    "audience": {
+      "type": "casual"
+    },
+    "session": {
+      "target_minutes": {
+        "min": 2,
+        "max": 5
+      }
+    },
+    "pillars": [
+      "readable_rules",
+      "meaningful_decisions"
+    ],
+    "complexity": {
+      "action_budget": "low",
+      "mechanic_budget": "medium"
+    },
+    "content_target": {
+      "type": "challenge",
+      "expected_count": 1
+    }
+  },
+  "game": {
+    "archetype": "block_puzzle"
+  },
+  "runtime": {
+    "simulation_mode": "TURN_BASED",
+    "tick_rate": 60
+  },
+  "action_space": {
+    "type": "composite",
+    "fields": {
+      "type": {
+        "type": "discrete",
+        "values": [
+          "PLACE"
+        ]
+      },
+      "piece": {
+        "type": "discrete",
+        "values": [
+          0,
+          1,
+          2
+        ]
+      },
+      "x": {
+        "type": "discrete",
+        "values": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "y": {
+        "type": "discrete",
+        "values": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      }
+    }
+  },
+  "observation": {
+    "mode": "VISIBLE_STATE",
+    "delay_ms": 0,
+    "noise": null
+  },
+  "rng": {
+    "enabled": true
+  },
+  "content": {
+    "id": "block_puzzle-challenge-001",
+    "type": "challenge",
+    "archetype": "block_puzzle",
+    "parameters": {},
+    "objectives": [],
+    "dependencies": [],
+    "extensions": {
+      "block_puzzle": {
+        "width": 6,
+        "height": 6,
+        "shapes": [
+          {
+            "id": "dot",
+            "cells": [
+              [
+                0,
+                0
+              ]
+            ]
+          },
+          {
+            "id": "domino_h",
+            "cells": [
+              [
+                0,
+                0
+              ],
+              [
+                1,
+                0
+              ]
+            ]
+          },
+          {
+            "id": "domino_v",
+            "cells": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                1
+              ]
+            ]
+          },
+          {
+            "id": "tri_h",
+            "cells": [
+              [
+                0,
+                0
+              ],
+              [
+                1,
+                0
+              ],
+              [
+                2,
+                0
+              ]
+            ]
+          },
+          {
+            "id": "tri_v",
+            "cells": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                1
+              ],
+              [
+                0,
+                2
+              ]
+            ]
+          },
+          {
+            "id": "square",
+            "cells": [
+              [
+                0,
+                0
+              ],
+              [
+                1,
+                0
+              ],
+              [
+                0,
+                1
+              ],
+              [
+                1,
+                1
+              ]
+            ]
+          },
+          {
+            "id": "el",
+            "cells": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                1
+              ],
+              [
+                1,
+                1
+              ]
+            ]
+          }
+        ],
+        "batchSize": 3,
+        "streamPolicy": "random",
+        "targetLines": 8,
+        "maxPlacements": 100
+      }
+    }
+  },
+  "evaluation": {
+    "player_profiles": [
+      {
+        "id": "random_placement",
+        "version": "1.0.0"
+      },
+      {
+        "id": "greedy_immediate_clear",
+        "version": "1.0.0"
+      },
+      {
+        "id": "batch_search",
+        "version": "1.0.0"
+      },
+      {
+        "id": "lookahead",
+        "version": "1.0.0"
+      }
+    ],
+    "metrics": [
+      "legal_placement_count",
+      "survival_rounds",
+      "empty_cells",
+      "fragmentation",
+      "line_clear_rate",
+      "future_piece_robustness"
+    ],
+    "gates": [
+      "schema",
+      "runtime",
+      "replay"
+    ],
+    "seed_set": {
+      "mode": "fixed",
+      "values": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    }
+  },
+  "provenance": {
+    "rules_version": "block_puzzle_v0.1",
+    "assumptions": []
+  },
+  "adapter": {
+    "id": "web",
+    "version": "0.1"
+  },
+  "extensions": {}
+}

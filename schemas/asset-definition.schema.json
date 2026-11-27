@@ -1,0 +1,526 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.a2asset.local/v1/asset-definition.schema.json",
+  "title": "asset-definition",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "assetId",
+    "version",
+    "kind",
+    "roles",
+    "styleTags",
+    "capabilities",
+    "sources",
+    "provenance",
+    "approvalStatus"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "assetId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+      "maxLength": 128
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "kind": {
+      "enum": [
+        "sprite2d",
+        "background2d",
+        "animation2d",
+        "atlas2d",
+        "tilemap2d",
+        "ui9slice",
+        "vfx2d",
+        "audio",
+        "font"
+      ]
+    },
+    "roles": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+        "maxLength": 128
+      }
+    },
+    "styleTags": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "states": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9._-]*$"
+          }
+        },
+        "direction": {
+          "enum": [
+            "none",
+            "left",
+            "right",
+            "up",
+            "down",
+            "eight-way"
+          ]
+        },
+        "supportsTint": {
+          "type": "boolean"
+        },
+        "supportsNineSlice": {
+          "type": "boolean"
+        }
+      }
+    },
+    "geometry": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pixelSize": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "logicalSize": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "pivot": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "trimOffset": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "sha256",
+          "mediaType"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "pattern": "^(?!/)(?![a-zA-Z]:)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\)(?!.*//)[a-zA-Z0-9_.@/+-]+$"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "mediaType": {
+            "type": "string",
+            "minLength": 1
+          },
+          "state": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9._-]*$"
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "origin",
+        "licenseExpression",
+        "licenseEvidencePath",
+        "redistributionApproved",
+        "reviewer"
+      ],
+      "properties": {
+        "origin": {
+          "enum": [
+            "owned",
+            "third-party",
+            "procedural"
+          ]
+        },
+        "sourceUrl": {
+          "type": "string",
+          "format": "uri"
+        },
+        "author": {
+          "type": "string"
+        },
+        "licenseExpression": {
+          "type": "string",
+          "minLength": 1
+        },
+        "licenseEvidencePath": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512,
+          "pattern": "^(?!/)(?![a-zA-Z]:)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\)(?!.*//)[a-zA-Z0-9_.@/+-]+$"
+        },
+        "redistributionApproved": {
+          "type": "boolean"
+        },
+        "reviewer": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reviewedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "approvalStatus": {
+      "enum": [
+        "imported",
+        "inspected",
+        "approved",
+        "published",
+        "deprecated",
+        "quarantined"
+      ]
+    },
+    "variants": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "variantId",
+          "target",
+          "path",
+          "sha256"
+        ],
+        "properties": {
+          "variantId": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+            "maxLength": 128
+          },
+          "target": {
+            "type": "string",
+            "minLength": 1
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "pattern": "^(?!/)(?![a-zA-Z]:)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\)(?!.*//)[a-zA-Z0-9_.@/+-]+$"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "mediaType": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "stateFrames": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9._-]*$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "frames",
+          "loop"
+        ],
+        "properties": {
+          "loop": {
+            "type": "boolean"
+          },
+          "frames": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "sourceIndex",
+                "durationMs"
+              ],
+              "properties": {
+                "sourceIndex": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "durationMs": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "pivot": {
+                  "type": "array",
+                  "items": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "nineSlice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "left",
+        "right",
+        "top",
+        "bottom"
+      ],
+      "properties": {
+        "left": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "right": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "top": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "bottom": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "tilemap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tileSize",
+        "orientation"
+      ],
+      "properties": {
+        "tileSize": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "orientation": {
+          "const": "orthogonal"
+        },
+        "layers": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+            "maxLength": 128
+          }
+        }
+      }
+    },
+    "vfx": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "effectKind"
+      ],
+      "properties": {
+        "effectKind": {
+          "enum": [
+            "frames",
+            "procedural-approved"
+          ]
+        },
+        "approvedEffectId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "maxLength": 128
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "string",
+              "number",
+              "integer",
+              "boolean"
+            ]
+          }
+        }
+      }
+    },
+    "audioInfo": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sampleRate": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "channels": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8
+        },
+        "durationMs": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "fontInfo": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "family": {
+          "type": "string",
+          "minLength": 1
+        },
+        "weight": {
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 900
+        },
+        "glyphCoverage": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "animation2d"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "required": [
+          "stateFrames"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "ui9slice"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "required": [
+          "nineSlice"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "tilemap2d"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "required": [
+          "tilemap"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "vfx2d"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "required": [
+          "vfx"
+        ]
+      }
+    }
+  ]
+}

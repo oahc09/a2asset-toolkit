@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.a2asset.local/v1/visual-spec.schema.json",
+  "title": "visual-spec",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "themeId",
+    "palette",
+    "renderStyle",
+    "layout"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "themeId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+      "maxLength": 128
+    },
+    "palette": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^#[0-9A-Fa-f]{6}(?:[0-9A-Fa-f]{2})?$"
+      }
+    },
+    "renderStyle": {
+      "enum": [
+        "pixel",
+        "flat",
+        "cartoon",
+        "hand-drawn",
+        "neon",
+        "glass",
+        "other"
+      ]
+    },
+    "layout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "width",
+        "height",
+        "safeArea"
+      ],
+      "properties": {
+        "width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "safeArea": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "rules": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "viewAngle": {
+          "enum": [
+            "top-down",
+            "side",
+            "isometric",
+            "front",
+            "mixed"
+          ]
+        },
+        "outline": {
+          "enum": [
+            "none",
+            "thin",
+            "thick",
+            "variable"
+          ]
+        },
+        "pixelDensity": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "animationStyle": {
+          "enum": [
+            "frame",
+            "cutout",
+            "procedural",
+            "mixed"
+          ]
+        },
+        "notes": {
+          "type": "string",
+          "maxLength": 1024
+        }
+      }
+    },
+    "referenceAssetIds": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+        "maxLength": 128
+      }
+    }
+  }
+}

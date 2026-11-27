@@ -1,0 +1,14 @@
+✔ SDK extraction review: decoded media type must match declared source (143.444218ms)
+✔ SDK extraction review: decoded source dimensions must match declared dimensions (97.35707ms)
+✔ SDK extraction review: repeated same import preserves inspected state without illegal transition (160.734649ms)
+✔ SDK import cancellation cannot add an inspected asset (1.288777ms)
+✔ SDK import refuses wrong source digest and never autoapproves (183.094206ms)
+✔ SDK import derives permitted codec formats from variants as well as sources (304.792491ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1600.020964
