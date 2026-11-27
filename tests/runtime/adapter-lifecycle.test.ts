@@ -29,3 +29,72 @@ test('pending audio acquire cannot resurrect disposed bundle',async t=>{const f=
 test('sprite native setup failure before factory returns frees node and frame',async t=>{const f=await fixture(t,'sprite2d','factory'),bundle=await f.runtime.loadBundle('http://localhost/manifest.json');assert.throws(()=>f.runtime.acquireSprite(bundle,'one',f.parent),/component/);assert.equal(f.nodes.length,1);assert.equal(f.displays.length,1);assert.ok([...f.nodes,...f.displays].every(x=>x.dead));await f.runtime.disposeBundle(bundle);});
 test('font registration failure cannot strand a registered face',async t=>{const f=await fixture(t);t.mock.method(f.faces,'add',(face:any)=>{Set.prototype.add.call(f.faces,face);throw Error('registration failure');});await assert.rejects(f.runtime.loadBundle('http://localhost/manifest.json'),/registration failure/);assert.equal(f.faces.size,0);assert.equal(f.runtime.stats().bundles,0);});
 test('sprite release tolerates a component already destroyed by its scene owner',async t=>{const f=await fixture(t,'sprite2d'),bundle=await f.runtime.loadBundle('http://localhost/manifest.json'),sprite=f.runtime.acquireSprite(bundle,'one',f.parent);sprite.sprite.isValid=false;Object.defineProperty(sprite.sprite,'spriteFrame',{set(){throw Error('destroyed component setter');}});assert.doesNotThrow(()=>sprite.release());assert.ok([...f.nodes,...f.displays].every(x=>x.dead));await f.runtime.disposeBundle(bundle);});
+
+test('animation skips native writes until the selected frame changes and clamps one-shot clips', async t => {
+ const f=await fixture(t,'animation2d');
+ const frames=[{file:'atlas.png',durationMs:7},{file:'atlas.png',durationMs:11},{file:'atlas.png',durationMs:19}];
+ (f.manifest.bindings.one as any).stateClips={loop:{loop:true,frames},once:{loop:false,frames}};
+ const bundle=await f.runtime.loadBundle('http://localhost/manifest.json');
+ try {
+  const animation=f.runtime.createAnimation(bundle,'one','loop',f.parent);
+  const reset=t.mock.method(animation.frame,'reset');
+  for(let i=0;i<100;i++)animation.advance(0);
+  animation.advance(6.5);
+  assert.equal(animation.frameIndex,0);
+  assert.equal(reset.mock.callCount(),0);
+  animation.advance(.5);
+  assert.equal(animation.frameIndex,1);
+  assert.equal(reset.mock.callCount(),1);
+  animation.advance(30);
+  assert.equal(animation.frameIndex,0);
+  assert.equal(reset.mock.callCount(),2);
+  animation.advance(37*1_000_000);
+  assert.equal(animation.frameIndex,0);
+  assert.equal(reset.mock.callCount(),2);
+  const once=f.runtime.createAnimation(bundle,'one','once',f.parent);
+  const onceReset=t.mock.method(once.frame,'reset');
+  once.advance(37);
+  assert.equal(once.frameIndex,2);
+  once.advance(Number.MAX_VALUE);
+  assert.equal(once.frameIndex,2);
+  assert.equal(onceReset.mock.callCount(),1);
+ } finally { await f.runtime.disposeBundle(bundle); }
+});
+
+test('loop arithmetic preserves existing phase for deltas above safe integer range', async t => {
+ const f=await fixture(t,'animation2d');
+ const frames=[1,1].map(durationMs=>({file:'atlas.png',durationMs}));
+ (f.manifest.bindings.one as any).stateClips={loop:{loop:true,frames}};
+ const bundle=await f.runtime.loadBundle('http://localhost/manifest.json');
+ try {
+  const animation=f.runtime.createAnimation(bundle,'one','loop',f.parent);
+  animation.advance(1);
+  assert.equal(animation.frameIndex,1);
+  animation.advance(2**53);
+  assert.equal(animation.frameIndex,1);
+  for(const dt of [NaN,Infinity,-1])assert.throws(()=>animation.advance(dt),(e:any)=>e.code==='E_SCHEMA_INVALID');
+  assert.equal(animation.frameIndex,1);
+ } finally { await f.runtime.disposeBundle(bundle); }
+});
+
+test('failed native animation frame transition releases only the failing display', async t => {
+ const f=await fixture(t,'animation2d');
+ const frames=[7,11].map(durationMs=>({file:'atlas.png',durationMs}));
+ (f.manifest.bindings.one as any).stateClips={loop:{loop:true,frames}};
+ const bundle=await f.runtime.loadBundle('http://localhost/manifest.json');
+ try {
+  const first=f.runtime.createAnimation(bundle,'one','loop',f.parent);
+  const other=f.runtime.createAnimation(bundle,'one','loop',f.parent);
+  t.mock.method(first.frame,'reset',()=>{throw Error('native frame failure');});
+  assert.throws(()=>first.advance(7),/native frame failure/);
+  assert.equal(first.frameIndex,0);
+  assert.equal(first.released,true);
+  assert.throws(()=>first.advance(1),(e:any)=>e.code==='E_RUNTIME_DISPOSE');
+  assert.equal(other.released,false);
+  assert.equal(other.frameIndex,0);
+  other.advance(7);
+  assert.equal(other.frameIndex,1);
+  assert.equal(f.runtime.stats().assets,1);
+  assert.equal(f.runtime.stats().textures,1);
+ } finally { await f.runtime.disposeBundle(bundle); }
+});

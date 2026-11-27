@@ -54,8 +54,52 @@ export function createCocosAssetRuntime(cc:Json,options:RuntimeOptions={}){
  function acquireSprite(handle:BundleHandle,slot:string,parent:any):SpriteHandle{const s=state(handle),binding=bindingFor(s,slot);if(!['sprite2d','background2d','animation2d','atlas2d','ui9slice','vfx2d'].includes(binding.kind))bad('E_PROCESSOR_UNSUPPORTED','Slot is not a sprite');const frame=binding.atlasRegion??{file:binding.files[0]},image=s.images.get(frame.file);if(!image)bad('E_REFERENCE_MISSING','Sprite texture missing');const display=textureSprite(parent,image!.texture,{name:slot,size:binding.logicalSize??[frame.sourceSize?.[0]??image!.width,frame.sourceSize?.[1]??image!.height],anchor:binding.pivot??[.5,.5]});let released=false;const asset:SpriteHandle={node:display.node,sprite:display.sprite,frame:display.frame,get released(){return released;},release(){if(released)return;released=true;try{display.dispose();}finally{s.assets.delete(asset);}}};
   try{asset.sprite.trim=false;asset.sprite.sizeMode=cc.Sprite.SizeMode.CUSTOM;setFrame(asset,s,binding,frame);if(binding.nineSlice){const n=binding.nineSlice,r=frame.rect??[0,0,image!.width,image!.height];if(['left','right','top','bottom'].some(k=>!Number.isInteger(n[k])||n[k]<0)||n.left+n.right>r[2]||n.top+n.bottom>r[3])bad('E_SCHEMA_INVALID','Nine-slice insets exceed rect');Object.assign(asset.frame,{insetLeft:n.left,insetRight:n.right,insetTop:n.top,insetBottom:n.bottom});asset.sprite.type=cc.Sprite.Type.SLICED;}s.assets.add(asset);return asset;}catch(e){asset.release();throw e;}
  }
- function createAnimation(handle:BundleHandle,slot:string,name:string,parent:any):AnimationHandle{const s=state(handle),binding=bindingFor(s,slot),clip=record(binding.stateClips)&&Object.hasOwn(binding.stateClips,name)?binding.stateClips[name]:undefined;if(!clip||!Array.isArray(clip.frames)||!clip.frames.length||clip.frames.some((f:Json)=>!Number.isSafeInteger(f.durationMs)||f.durationMs<=0))bad('E_REFERENCE_MISSING','Animation state/frames missing');const sprite=acquireSprite(handle,slot,parent);let index=0,time=0;const total=clip.frames.reduce((sum:number,f:Json)=>sum+f.durationMs,0);try{setFrame(sprite,s,binding,clip.frames[0]);}catch(e){sprite.release();throw e;}Object.defineProperty(sprite,'frameIndex',{get:()=>index});return Object.assign(sprite,{advance(deltaMs:number){state(handle);if(sprite.released)bad('E_RUNTIME_DISPOSE','Animation released');if(!Number.isFinite(deltaMs)||deltaMs<0)bad('E_SCHEMA_INVALID','Invalid animation delta');time=clip.loop?(time+deltaMs)%total:Math.min(time+deltaMs,total);let start=0;index=clip.frames.length-1;for(let i=0;i<clip.frames.length;i++){start+=clip.frames[i].durationMs;if(time<start){index=i;break;}}setFrame(sprite,s,binding,clip.frames[index]);}}) as AnimationHandle;}
- async function acquireAudio(handle:BundleHandle,slot:string,parent:any):Promise<AudioHandle>{
+ // Clips come from the frozen bundle manifest; cache the cumulative frame ends
+ // so independent handles keep independent clocks but share one lookup table.
+ const frameEndsByClip=new WeakMap<Json,readonly number[]>();
+ function createAnimation(handle:BundleHandle,slot:string,name:string,parent:any):AnimationHandle {
+  const s=state(handle),binding=bindingFor(s,slot);
+  const clip=record(binding.stateClips)&&Object.hasOwn(binding.stateClips,name)?binding.stateClips[name]:undefined;
+  if(!clip)bad('E_REFERENCE_MISSING','Animation state/frames missing');
+  const frames=clip.frames as readonly Json[];
+  let cached=frameEndsByClip.get(clip);
+  if(!cached){
+   let end=0;
+   cached=frames.map(frame=>end+=frame.durationMs);
+   frameEndsByClip.set(clip,cached);
+  }
+  const ends=cached,total=ends[ends.length-1],sprite=acquireSprite(handle,slot,parent);
+  let index=0,time=0;
+  const show=(frame:Json)=>{
+   try{setFrame(sprite,s,binding,frame);}
+   catch(e){try{sprite.release();}finally{throw e;}}
+  };
+  show(frames[0]);
+  Object.defineProperty(sprite,'frameIndex',{get:()=>index});
+  return Object.assign(sprite,{advance(deltaMs:number){
+   state(handle);
+   if(sprite.released)bad('E_RUNTIME_DISPOSE','Animation released');
+   if(!Number.isFinite(deltaMs)||deltaMs<0)bad('E_SCHEMA_INVALID','Invalid animation delta');
+   if(deltaMs===0||(!clip.loop&&time===total))return;
+   // Reduce before addition: a large whole-cycle delta must not round away
+   // existing phase. Subtract at wrap to avoid an intermediate sum > total.
+   const step=clip.loop?deltaMs%total:deltaMs,remaining=total-time;
+   const next=step<remaining?time+step:clip.loop?step-remaining:total;
+   const nextTime=clip.loop&&next===total?0:next;
+   let target=index;
+   if(!(nextTime>=(ends[index-1]??0)&&nextTime<ends[index])){
+    let lo=0,hi=ends.length-1;
+    while(lo<hi){
+     const mid=lo+Math.floor((hi-lo)/2);
+     if(nextTime<ends[mid])hi=mid;else lo=mid+1;
+    }
+    target=lo;
+   }
+   if(target!==index)show(frames[target]);
+   index=target;
+   time=nextTime;
+  }}) as AnimationHandle;
+ } async function acquireAudio(handle:BundleHandle,slot:string,parent:any):Promise<AudioHandle>{
   const s=state(handle),binding=bindingFor(s,slot);if(binding.kind!=='audio'||binding.files.length!==1)bad('E_PROCESSOR_UNSUPPORTED','Slot is not audio');const clip=s.audio.get(binding.files[0]);if(!clip)bad('E_REFERENCE_MISSING','Audio missing');
   const node=new cc.Node(slot);let source:any,released=false;const asset:AudioHandle={node,get source(){return source;},get released(){return released;},play(){state(handle);if(released)bad('E_RUNTIME_DISPOSE','Audio released');source.play();},stop(){if(!released)source?.stop();},release(){if(released)return;released=true;try{cleanupAll([()=>source?.stop(),()=>{if(source)source.clip=null;},()=>node.destroy()]);}finally{s.assets.delete(asset);}}};
   try{node.active=false;parent.addChild(node);source=node.addComponent(cc.AudioSource);source.playOnAwake=false;source.clip=clip;node.active=true;s.assets.add(asset);await source.loadAsync({timeoutMs:5000});if(s.disposed||asset.released)bad('E_RUNTIME_DISPOSE','Bundle disposed while audio prepared');return asset;}catch(e){try{asset.release();}finally{throw e;}}
